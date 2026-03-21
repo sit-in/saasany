@@ -52,6 +52,13 @@
   "pricing": {
     "title": "简单透明的定价",
     "subtitle": "免费起步，随增长扩展，无任何隐藏费用。",
+    "monthly": "按月付款",
+    "yearly": "按年付款",
+    "savePercent": "节省 {percent}%",
+    "popular": "最受欢迎",
+    "perMonth": "/ 月",
+    "perYear": "/ 年",
+    "billedYearly": "按年计费",
     "free": {
       "name": "免费版",
       "price": "¥0",
@@ -67,6 +74,8 @@
     },
     "pro": {
       "name": "专业版",
+      "monthlyPrice": "$29",
+      "yearlyPrice": "$290",
       "price": "¥199",
       "period": "每月",
       "features": [
@@ -78,8 +87,11 @@
         "自定义域名支持",
         "移除 Sassany 品牌标识"
       ],
-      "cta": "开始专业版试用"
-    }
+      "cta": "开始专业版试用",
+      "ctaYearly": "开始专业版试用（按年）"
+    },
+    "errorOccurred": "出现错误，请重试。",
+    "redirecting": "正在跳转到结算页面..."
   },
   "footer": {
     "copyright": "© {year} Sassany 版权所有",
@@ -120,6 +132,22 @@
     "welcome": "欢迎回来，{name}",
     "settings": "设置",
     "billing": "账单"
+  },
+  "billing": {
+    "title": "账单管理",
+    "description": "管理你的订阅和账单信息。",
+    "currentPlan": "当前套餐",
+    "freePlan": "免费版",
+    "proPlan": "专业版",
+    "status": "状态",
+    "active": "生效中",
+    "inactive": "未激活",
+    "canceled": "已取消",
+    "renewsOn": "续费日期：{date}",
+    "expiresOn": "到期日期：{date}",
+    "manageSubscription": "管理订阅",
+    "upgradeNow": "立即升级",
+    "comingSoon": "账单管理功能即将上线。"
   },
   "common": {
     "loading": "加载中...",

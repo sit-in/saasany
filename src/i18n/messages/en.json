@@ -52,6 +52,13 @@
   "pricing": {
     "title": "Simple Pricing",
     "subtitle": "Start for free and scale as you grow. No hidden fees.",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "savePercent": "Save {percent}%",
+    "popular": "Popular",
+    "perMonth": "/ month",
+    "perYear": "/ year",
+    "billedYearly": "billed yearly",
     "free": {
       "name": "Free",
       "price": "$0",
@@ -67,6 +74,8 @@
     },
     "pro": {
       "name": "Pro",
+      "monthlyPrice": "$29",
+      "yearlyPrice": "$290",
       "price": "$29",
       "period": "per month",
       "features": [
@@ -78,8 +87,11 @@
         "Custom domain support",
         "Remove Sassany branding"
       ],
-      "cta": "Start Pro Trial"
-    }
+      "cta": "Start Pro Trial",
+      "ctaYearly": "Start Pro Trial (Yearly)"
+    },
+    "errorOccurred": "Something went wrong. Please try again.",
+    "redirecting": "Redirecting to checkout..."
   },
   "footer": {
     "copyright": "© {year} Sassany. All rights reserved.",
@@ -120,6 +132,22 @@
     "welcome": "Welcome back, {name}",
     "settings": "Settings",
     "billing": "Billing"
+  },
+  "billing": {
+    "title": "Billing",
+    "description": "Manage your subscription and billing information.",
+    "currentPlan": "Current Plan",
+    "freePlan": "Free Plan",
+    "proPlan": "Pro Plan",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "canceled": "Canceled",
+    "renewsOn": "Renews on {date}",
+    "expiresOn": "Expires on {date}",
+    "manageSubscription": "Manage Subscription",
+    "upgradeNow": "Upgrade Now",
+    "comingSoon": "Billing management coming soon."
   },
   "common": {
     "loading": "Loading...",
