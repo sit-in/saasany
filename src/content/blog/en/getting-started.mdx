@@ -1,0 +1,31 @@
+---
+title: "Getting Started with Sassany"
+description: "Learn how to set up your AI SaaS product with Sassany in minutes and ship faster than ever."
+date: "2024-03-01"
+author: "Sassany Team"
+image: "/images/blog/getting-started.jpg"
+---
+
+## Welcome to Sassany
+
+Sassany is a production-ready Next.js starter template built for developers who want to launch AI-powered SaaS products without spending weeks on boilerplate. With built-in authentication, payments, AI integration, and internationalization, you can go from zero to a fully functional product in a single weekend.
+
+This guide walks you through the essential steps to get your project running locally and deploy it to production.
+
+## Prerequisites
+
+Before you begin, make sure you have Node.js 18 or later installed, along with accounts for the services Sassany integrates with: a database provider (we recommend Neon for serverless Postgres), Stripe for payments, an OpenAI-compatible API key for AI features, and Resend for transactional emails.
+
+Clone the repository, copy the `.env.example` file to `.env.local`, and fill in your credentials. The environment variable names are self-explanatory and each one has an inline comment explaining its purpose.
+
+## Running Locally
+
+Install dependencies with `npm install`, then run the database migrations with `npm run db:push`. Start the development server with `npm run dev`. Your app will be available at `http://localhost:3000`.
+
+The project supports two locales out of the box — English (`/en`) and Chinese (`/zh`). Switching between them is handled automatically by `next-intl` through the locale-aware routing. You can add more locales by editing `src/i18n/config.ts` and creating the corresponding message file under `src/i18n/messages/`.
+
+## Deploying to Production
+
+Sassany is designed to be deployed on Vercel with zero configuration. Push your code to GitHub, connect the repository to a new Vercel project, add your environment variables in the Vercel dashboard, and click deploy. The entire process takes under five minutes.
+
+Once deployed, head to your Stripe dashboard to set up webhook endpoints so subscription events are forwarded to your app. The webhook handler is already in place at `/api/webhooks/stripe` — you just need to point Stripe at your production URL.

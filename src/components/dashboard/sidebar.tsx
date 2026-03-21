@@ -8,6 +8,7 @@ import {
   Settings,
   LogOut,
   Sparkles,
+  ShieldCheck,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { Link } from "@/i18n/navigation";
@@ -32,6 +33,7 @@ interface DashboardSidebarProps {
     name: string;
     email: string;
     image?: string | null;
+    role?: string | null;
   };
   locale: string;
   translations: {
@@ -42,6 +44,7 @@ interface DashboardSidebarProps {
     billing: string;
     settings: string;
     signOut: string;
+    admin: string;
   };
 }
 
@@ -100,7 +103,15 @@ export function DashboardSidebar({
 }: DashboardSidebarProps) {
   const pathname = usePathname();
 
-  const items = navItems(locale);
+  const baseItems = navItems(locale);
+  const adminItem = {
+    key: "admin",
+    href: `/${locale}/admin`,
+    icon: ShieldCheck,
+    matchExact: false,
+  };
+  const items =
+    user.role === "admin" ? [...baseItems, adminItem] : baseItems;
 
   function isActive(href: string, matchExact: boolean): boolean {
     if (matchExact) return pathname === href;

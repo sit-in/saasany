@@ -238,6 +238,33 @@
     "copied": "Copied!",
     "copyKeyWarning": "Copy this key now — it won't be shown again."
   },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Thoughts on AI, SaaS, and building products people love.",
+    "readMore": "Read more",
+    "backToList": "Back to Blog",
+    "publishedOn": "Published on {date}",
+    "noPosts": "No posts yet. Check back soon."
+  },
+  "admin": {
+    "title": "Admin",
+    "overview": "Overview",
+    "users": "Users",
+    "totalUsers": "Total Users",
+    "activeSubscriptions": "Active Subscriptions",
+    "newUsersThisMonth": "New Users (This Month)",
+    "totalRevenue": "Total Revenue",
+    "userList": "User List",
+    "name": "Name",
+    "email": "Email",
+    "role": "Role",
+    "joinedAt": "Joined",
+    "subscriptionStatus": "Subscription",
+    "search": "Search users...",
+    "noUsers": "No users found",
+    "previous": "Previous",
+    "next": "Next"
+  },
   "common": {
     "loading": "Loading...",
     "error": "Something went wrong. Please try again.",

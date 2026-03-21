@@ -26,11 +26,13 @@ export default async function DashboardLayout({
   const tDash = await getTranslations("dashboard");
   const tAi = await getTranslations("ai");
   const tApiKeys = await getTranslations("apiKeys");
+  const tAdmin = await getTranslations("admin");
 
   const user = {
     name: session.user.name,
     email: session.user.email,
     image: session.user.image ?? null,
+    role: session.user.role ?? null,
   };
 
   const sidebarTranslations = {
@@ -41,6 +43,7 @@ export default async function DashboardLayout({
     billing: tDash("billing"),
     settings: tDash("settings"),
     signOut: tDash("signOut"),
+    admin: tAdmin("title"),
   };
 
   const headerTranslations = {

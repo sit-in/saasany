@@ -238,6 +238,33 @@
     "copied": "已复制！",
     "copyKeyWarning": "请立即复制此密钥 — 关闭后将不再显示。"
   },
+  "blog": {
+    "title": "博客",
+    "subtitle": "关于 AI、SaaS 和构建人们喜爱产品的思考。",
+    "readMore": "阅读全文",
+    "backToList": "返回博客列表",
+    "publishedOn": "发布于 {date}",
+    "noPosts": "暂无文章，敬请期待。"
+  },
+  "admin": {
+    "title": "管理后台",
+    "overview": "概览",
+    "users": "用户管理",
+    "totalUsers": "总用户数",
+    "activeSubscriptions": "活跃订阅数",
+    "newUsersThisMonth": "本月新增用户",
+    "totalRevenue": "总收入",
+    "userList": "用户列表",
+    "name": "姓名",
+    "email": "邮箱",
+    "role": "角色",
+    "joinedAt": "注册时间",
+    "subscriptionStatus": "订阅状态",
+    "search": "搜索用户...",
+    "noUsers": "暂无用户",
+    "previous": "上一页",
+    "next": "下一页"
+  },
   "common": {
     "loading": "加载中...",
     "error": "出现错误，请重试。",

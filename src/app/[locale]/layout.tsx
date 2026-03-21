@@ -31,6 +31,7 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: 'site' });
 
   return {
+    metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
     title: {
       default: t('name'),
       template: `%s | ${t('name')}`,
