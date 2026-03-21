@@ -194,6 +194,50 @@
     "verified": "Verified",
     "notVerified": "Not verified"
   },
+  "ai": {
+    "chat": {
+      "title": "AI Chat",
+      "placeholder": "Type a message... (Enter to send, Shift+Enter for new line)",
+      "send": "Send",
+      "clear": "Clear",
+      "emptyState": "Send a message to start chatting with the AI assistant.",
+      "thinking": "Thinking...",
+      "you": "You",
+      "assistant": "Assistant"
+    },
+    "generate": {
+      "title": "AI Text Generator",
+      "inputPlaceholder": "Enter your prompt here...",
+      "generate": "Generate",
+      "generating": "Generating...",
+      "result": "Result",
+      "copy": "Copy",
+      "copied": "Copied!",
+      "templates": {
+        "summarize": "Summarize",
+        "translate": "Translate",
+        "rewrite": "Rewrite"
+      }
+    }
+  },
+  "apiKeys": {
+    "title": "API Keys",
+    "create": "Create Key",
+    "name": "Name",
+    "namePlaceholder": "e.g. My Production Key",
+    "key": "Your API Keys",
+    "createdAt": "Created",
+    "lastUsed": "Last used",
+    "delete": "Delete",
+    "deleteConfirm": "Sure?",
+    "created": "Key created successfully",
+    "copyKey": "Copy",
+    "never": "Never",
+    "creating": "Creating...",
+    "noKeys": "No API keys yet. Create one above.",
+    "copied": "Copied!",
+    "copyKeyWarning": "Copy this key now — it won't be shown again."
+  },
   "common": {
     "loading": "Loading...",
     "error": "Something went wrong. Please try again.",

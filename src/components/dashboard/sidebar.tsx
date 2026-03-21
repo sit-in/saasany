@@ -7,6 +7,7 @@ import {
   CreditCard,
   Settings,
   LogOut,
+  Sparkles,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { Link } from "@/i18n/navigation";
@@ -36,6 +37,7 @@ interface DashboardSidebarProps {
   translations: {
     dashboard: string;
     aiChat: string;
+    aiGenerate: string;
     apiKeys: string;
     billing: string;
     settings: string;
@@ -54,6 +56,12 @@ const navItems = (locale: string) => [
     key: "aiChat",
     href: `/${locale}/chat`,
     icon: MessageSquare,
+    matchExact: false,
+  },
+  {
+    key: "aiGenerate",
+    href: `/${locale}/ai-generate`,
+    icon: Sparkles,
     matchExact: false,
   },
   {

@@ -194,6 +194,50 @@
     "verified": "已验证",
     "notVerified": "未验证"
   },
+  "ai": {
+    "chat": {
+      "title": "AI 对话",
+      "placeholder": "输入消息...（回车发送，Shift+回车换行）",
+      "send": "发送",
+      "clear": "清空",
+      "emptyState": "发送消息，开始与 AI 助手对话。",
+      "thinking": "思考中...",
+      "you": "你",
+      "assistant": "助手"
+    },
+    "generate": {
+      "title": "AI 文本生成",
+      "inputPlaceholder": "在此输入你的提示词...",
+      "generate": "生成",
+      "generating": "生成中...",
+      "result": "生成结果",
+      "copy": "复制",
+      "copied": "已复制！",
+      "templates": {
+        "summarize": "总结",
+        "translate": "翻译",
+        "rewrite": "改写"
+      }
+    }
+  },
+  "apiKeys": {
+    "title": "API 密钥",
+    "create": "创建密钥",
+    "name": "名称",
+    "namePlaceholder": "例如：我的生产密钥",
+    "key": "你的 API 密钥",
+    "createdAt": "创建时间",
+    "lastUsed": "最后使用",
+    "delete": "删除",
+    "deleteConfirm": "确定？",
+    "created": "密钥创建成功",
+    "copyKey": "复制",
+    "never": "从未使用",
+    "creating": "创建中...",
+    "noKeys": "还没有 API 密钥，在上方创建一个。",
+    "copied": "已复制！",
+    "copyKeyWarning": "请立即复制此密钥 — 关闭后将不再显示。"
+  },
   "common": {
     "loading": "加载中...",
     "error": "出现错误，请重试。",

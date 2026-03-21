@@ -24,8 +24,8 @@ export default async function DashboardLayout({
   }
 
   const tDash = await getTranslations("dashboard");
-  const tNav = await getTranslations("nav");
-  const tCommon = await getTranslations("common");
+  const tAi = await getTranslations("ai");
+  const tApiKeys = await getTranslations("apiKeys");
 
   const user = {
     name: session.user.name,
@@ -34,9 +34,10 @@ export default async function DashboardLayout({
   };
 
   const sidebarTranslations = {
-    dashboard: tNav("dashboard"),
-    aiChat: "AI Chat",
-    apiKeys: "API Keys",
+    dashboard: tDash("title"),
+    aiChat: tAi("chat.title"),
+    aiGenerate: tAi("generate.title"),
+    apiKeys: tApiKeys("title"),
     billing: tDash("billing"),
     settings: tDash("settings"),
     signOut: tDash("signOut"),
