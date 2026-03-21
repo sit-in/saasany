@@ -22,10 +22,28 @@ export async function generateMetadata({
   const { locale, slug } = await params;
   const post = await getPostBySlug(slug, locale);
   if (!post) return {};
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const ogImageUrl = `${appUrl}/api/og?title=${encodeURIComponent(post.title)}&description=${encodeURIComponent(post.description ?? "")}`;
+  const ogImages = post.image ? [post.image] : [ogImageUrl];
+
   return {
     title: post.title,
     description: post.description,
-    openGraph: post.image ? { images: [post.image] } : undefined,
+    openGraph: {
+      title: post.title,
+      description: post.description,
+      type: "article",
+      publishedTime: post.date,
+      authors: post.author ? [post.author] : undefined,
+      images: ogImages,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.description,
+      images: ogImages,
+    },
   };
 }
 

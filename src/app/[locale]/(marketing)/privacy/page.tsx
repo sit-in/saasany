@@ -1,0 +1,74 @@
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "privacy" });
+  return {
+    title: t("title"),
+  };
+}
+
+export default async function PrivacyPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "privacy" });
+  const lastUpdated = "January 1, 2025";
+
+  return (
+    <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+      <div className="mb-12">
+        <h1 className="text-4xl font-bold tracking-tight mb-4">{t("title")}</h1>
+        <p className="text-muted-foreground text-sm">
+          {t("lastUpdated", { date: lastUpdated })}
+        </p>
+      </div>
+
+      <div className="prose prose-neutral dark:prose-invert max-w-none prose-headings:font-semibold prose-headings:tracking-tight prose-a:text-primary prose-a:no-underline hover:prose-a:underline">
+        <p>{t("intro")}</p>
+
+        <h2>{t("sections.collect.title")}</h2>
+        <p>{t("sections.collect.content")}</p>
+        <ul>
+          <li>{t("sections.collect.items.account")}</li>
+          <li>{t("sections.collect.items.usage")}</li>
+          <li>{t("sections.collect.items.payment")}</li>
+        </ul>
+
+        <h2>{t("sections.use.title")}</h2>
+        <p>{t("sections.use.content")}</p>
+        <ul>
+          <li>{t("sections.use.items.service")}</li>
+          <li>{t("sections.use.items.improve")}</li>
+          <li>{t("sections.use.items.communicate")}</li>
+          <li>{t("sections.use.items.legal")}</li>
+        </ul>
+
+        <h2>{t("sections.share.title")}</h2>
+        <p>{t("sections.share.content")}</p>
+
+        <h2>{t("sections.security.title")}</h2>
+        <p>{t("sections.security.content")}</p>
+
+        <h2>{t("sections.rights.title")}</h2>
+        <p>{t("sections.rights.content")}</p>
+
+        <h2>{t("sections.contact.title")}</h2>
+        <p>
+          {t.rich("sections.contact.content", {
+            email: (chunks) => (
+              <a href="mailto:privacy@sassany.com">{chunks}</a>
+            ),
+          })}
+        </p>
+      </div>
+    </div>
+  );
+}

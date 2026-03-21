@@ -273,5 +273,107 @@
     "delete": "Delete",
     "confirm": "Confirm",
     "back": "Back"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred. Please try again.",
+    "retry": "Try Again",
+    "goHome": "Go Home"
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "description": "The page you're looking for doesn't exist or has been moved.",
+    "goHome": "Go Home"
+  },
+  "loading": "Loading...",
+  "privacy": {
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated: {date}",
+    "intro": "At Sassany, we are committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our service.",
+    "sections": {
+      "collect": {
+        "title": "Information We Collect",
+        "content": "We collect information that you provide directly to us, including:",
+        "items": {
+          "account": "Account information such as your name and email address when you register",
+          "usage": "Usage data and analytics to improve our service",
+          "payment": "Payment information processed securely through our payment provider"
+        }
+      },
+      "use": {
+        "title": "How We Use Your Information",
+        "content": "We use the information we collect to:",
+        "items": {
+          "service": "Provide, operate, and maintain our services",
+          "improve": "Improve, personalize, and expand our services",
+          "communicate": "Communicate with you about updates, security, and support",
+          "legal": "Comply with legal obligations"
+        }
+      },
+      "share": {
+        "title": "Information Sharing",
+        "content": "We do not sell, trade, or otherwise transfer your personal information to outside parties. We may share information with trusted third-party service providers who assist us in operating our platform, conducting our business, or serving you—so long as those parties agree to keep this information confidential."
+      },
+      "security": {
+        "title": "Data Security",
+        "content": "We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the internet or electronic storage is 100% secure."
+      },
+      "rights": {
+        "title": "Your Rights",
+        "content": "You have the right to access, correct, or delete your personal data at any time. You may also request that we restrict processing of your data or provide you with a copy in a portable format. To exercise these rights, please contact us at the address below."
+      },
+      "contact": {
+        "title": "Contact Us",
+        "content": "If you have any questions about this Privacy Policy, please contact us at <email>privacy@sassany.com</email>."
+      }
+    }
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "lastUpdated": "Last updated: {date}",
+    "intro": "Please read these Terms of Service carefully before using Sassany. By accessing or using our service, you agree to be bound by these terms.",
+    "sections": {
+      "acceptance": {
+        "title": "Acceptance of Terms",
+        "content": "By creating an account or using any part of our service, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service and our Privacy Policy."
+      },
+      "use": {
+        "title": "Acceptable Use",
+        "content": "You agree to use Sassany only for lawful purposes and in a manner that does not infringe upon the rights of others. You must not:",
+        "items": {
+          "lawful": "Use the service for any unlawful purpose or in violation of any applicable laws",
+          "noAbuse": "Attempt to gain unauthorized access to any part of the service or its related systems",
+          "noInfringe": "Infringe upon or violate the intellectual property rights of Sassany or others"
+        }
+      },
+      "account": {
+        "title": "Account Responsibilities",
+        "content": "You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to notify us immediately of any unauthorized use of your account."
+      },
+      "payment": {
+        "title": "Payments and Billing",
+        "content": "Paid subscriptions are billed in advance on a monthly or annual basis. All fees are non-refundable except as required by law. We reserve the right to change our pricing with reasonable notice to current subscribers."
+      },
+      "ip": {
+        "title": "Intellectual Property",
+        "content": "The Sassany platform and its original content, features, and functionality are owned by Sassany and are protected by international copyright, trademark, and other intellectual property laws."
+      },
+      "disclaimer": {
+        "title": "Disclaimer of Warranties",
+        "content": "The service is provided on an 'as is' and 'as available' basis without any warranties of any kind, either express or implied. We do not warrant that the service will be uninterrupted, error-free, or free of viruses or other harmful components."
+      },
+      "limitation": {
+        "title": "Limitation of Liability",
+        "content": "To the maximum extent permitted by applicable law, Sassany shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenues, whether incurred directly or indirectly."
+      },
+      "termination": {
+        "title": "Termination",
+        "content": "We reserve the right to suspend or terminate your account at any time for any reason, including if you violate these Terms of Service. Upon termination, your right to use the service will immediately cease."
+      },
+      "contact": {
+        "title": "Contact Us",
+        "content": "If you have any questions about these Terms of Service, please contact us at <email>legal@sassany.com</email>."
+      }
+    }
   }
 }
