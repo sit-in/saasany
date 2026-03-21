@@ -1,0 +1,116 @@
+{
+  "site": {
+    "name": "Sassany",
+    "description": "Build your AI SaaS product in a weekend"
+  },
+  "nav": {
+    "home": "Home",
+    "features": "Features",
+    "pricing": "Pricing",
+    "blog": "Blog",
+    "docs": "Docs",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "dashboard": "Dashboard"
+  },
+  "hero": {
+    "title": "Ship Your AI SaaS Product Fast",
+    "subtitle": "A production-ready Next.js template with authentication, payments, AI integration, and everything you need to launch your SaaS product.",
+    "cta": "Get Started",
+    "secondaryCta": "View Demo"
+  },
+  "features": {
+    "title": "Everything You Need",
+    "subtitle": "Built with a modern tech stack so you can focus on your product, not your infrastructure.",
+    "items": {
+      "authentication": {
+        "title": "Authentication",
+        "description": "Secure user authentication with email/password, magic links, and OAuth providers via Better Auth."
+      },
+      "payments": {
+        "title": "Payments",
+        "description": "Stripe integration for one-time payments and recurring subscriptions with a full billing portal."
+      },
+      "ai": {
+        "title": "AI Integration",
+        "description": "Vercel AI SDK pre-configured with streaming chat, completions, and tool-calling support out of the box."
+      },
+      "i18n": {
+        "title": "Internationalization",
+        "description": "Full i18n support with next-intl. Easily add new locales and serve a global audience from day one."
+      },
+      "dashboard": {
+        "title": "Dashboard",
+        "description": "A polished, accessible admin dashboard with data tables, charts, and settings pages ready to customize."
+      },
+      "seo": {
+        "title": "SEO Ready",
+        "description": "Metadata API, Open Graph, structured data, and sitemap generation configured so you rank from the start."
+      }
+    }
+  },
+  "pricing": {
+    "title": "Simple Pricing",
+    "subtitle": "Start for free and scale as you grow. No hidden fees.",
+    "free": {
+      "name": "Free",
+      "price": "$0",
+      "period": "forever",
+      "features": [
+        "Up to 3 projects",
+        "1,000 AI requests / month",
+        "Community support",
+        "Core authentication",
+        "Basic analytics"
+      ],
+      "cta": "Get Started Free"
+    },
+    "pro": {
+      "name": "Pro",
+      "price": "$29",
+      "period": "per month",
+      "features": [
+        "Unlimited projects",
+        "50,000 AI requests / month",
+        "Priority email support",
+        "Advanced authentication",
+        "Full analytics dashboard",
+        "Custom domain support",
+        "Remove Sassany branding"
+      ],
+      "cta": "Start Pro Trial"
+    }
+  },
+  "footer": {
+    "copyright": "© {year} Sassany. All rights reserved.",
+    "links": {
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service"
+    }
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot password?",
+    "orContinueWith": "Or continue with",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back, {name}",
+    "settings": "Settings",
+    "billing": "Billing"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong. Please try again.",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "back": "Back"
+  }
+}
