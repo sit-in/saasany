@@ -1,6 +1,6 @@
 @AGENTS.md
 
-# Sassany — AI SaaS 出海模板
+# Saasany — AI SaaS 出海模板
 
 Next.js 16 + React 19 全栈模板，集成认证、支付、AI、国际化。
 
@@ -84,3 +84,9 @@ Schema 在 `src/lib/db/schema.ts`，表包含：user, session, account, verifica
 
 ## Commit 粒度
 - 每个功能点单独一个 commit，不要把不相关的改动合并到一个 commit
+
+## Design System
+Always read DESIGN.md before making any visual or UI decisions.
+All font choices, colors, spacing, and aesthetic direction are defined there.
+Do not deviate without explicit user approval.
+In QA mode, flag any code that doesn't match DESIGN.md.
