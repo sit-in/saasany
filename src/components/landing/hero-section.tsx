@@ -27,7 +27,7 @@ function DashboardPreview() {
             <div className="h-3 w-3 rounded-full bg-green-400/70" />
           </div>
           <div className="mx-auto flex h-6 w-72 items-center justify-center rounded-md bg-background/80 px-3">
-            <span className="text-xs text-muted-foreground">app.sassany.com/dashboard</span>
+            <span className="text-xs text-muted-foreground">app.saasany.com/dashboard</span>
           </div>
         </div>
         <div className="flex" style={{ minHeight: 320 }}>
@@ -110,7 +110,7 @@ export function HeroSection({ title, subtitle, cta, secondaryCta }: HeroSectionP
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/80 to-background" />
         <div className="absolute left-1/2 top-1/4 -translate-x-1/2 -translate-y-1/2 h-96 w-96 rounded-full bg-primary/5 dark:bg-primary/10 blur-3xl" />
-        <div className="absolute right-1/4 top-1/3 h-64 w-64 rounded-full bg-blue-500/5 dark:bg-blue-500/10 blur-3xl" />
+        <div className="absolute right-1/4 top-1/3 h-64 w-64 rounded-full bg-primary/5 dark:bg-primary/10 blur-3xl" />
       </div>
 
       <div className="w-full max-w-5xl mx-auto text-center">

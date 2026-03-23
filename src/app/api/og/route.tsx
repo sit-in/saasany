@@ -1,11 +1,12 @@
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
+import { siteConfig } from "@/config/site";
 
 export const runtime = "edge";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const title = searchParams.get("title") || "Sassany";
+  const title = searchParams.get("title") || "Saasany";
   const description =
     searchParams.get("description") ||
     "Build your AI SaaS product in a weekend";
@@ -20,7 +21,7 @@ export async function GET(request: NextRequest) {
           flexDirection: "column",
           alignItems: "flex-start",
           justifyContent: "center",
-          background: "linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%)",
+          background: "linear-gradient(135deg, #0a0a0a 0%, #0a1a15 50%, #0d1f18 100%)",
           padding: "80px",
           fontFamily: "sans-serif",
           position: "relative",
@@ -37,7 +38,7 @@ export async function GET(request: NextRequest) {
             height: "600px",
             borderRadius: "50%",
             background:
-              "radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%)",
+              "radial-gradient(circle, rgba(13,146,118,0.2) 0%, transparent 70%)",
           }}
         />
         <div
@@ -49,7 +50,7 @@ export async function GET(request: NextRequest) {
             height: "400px",
             borderRadius: "50%",
             background:
-              "radial-gradient(circle, rgba(139,92,246,0.1) 0%, transparent 70%)",
+              "radial-gradient(circle, rgba(18,181,141,0.1) 0%, transparent 70%)",
           }}
         />
 
@@ -67,7 +68,7 @@ export async function GET(request: NextRequest) {
               width: "48px",
               height: "48px",
               borderRadius: "12px",
-              background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
+              background: "linear-gradient(135deg, #0D9276 0%, #12B58D 100%)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -86,7 +87,7 @@ export async function GET(request: NextRequest) {
               letterSpacing: "-0.5px",
             }}
           >
-            Sassany
+            Saasany
           </span>
         </div>
 
@@ -144,7 +145,7 @@ export async function GET(request: NextRequest) {
               fontWeight: "500",
             }}
           >
-            sassany.com
+            {siteConfig.url.replace('https://', '').replace('http://', '')}
           </span>
         </div>
       </div>

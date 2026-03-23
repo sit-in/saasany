@@ -8,6 +8,7 @@ import { ThemeToggle } from "./theme-toggle";
 import { LocaleSwitcher } from "./locale-switcher";
 import { Menu, X, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { siteConfig } from "@/config/site";
 
 export function Header() {
   const t = useTranslations("nav");
@@ -20,11 +21,11 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const navLinks = [
+  const navLinks: { href: string; label: string; external?: boolean }[] = [
     { href: "/#features", label: t("features") },
     { href: "/#pricing", label: t("pricing") },
     { href: "/blog", label: t("blog") },
-    { href: "/docs", label: t("docs") },
+    { href: siteConfig.links.github, label: t("docs"), external: true },
   ];
 
   return (
@@ -44,21 +45,33 @@ export function Header() {
               <Zap className="h-4 w-4" />
             </div>
             <span className="text-lg font-bold tracking-tight text-foreground">
-              Sassany
+              {siteConfig.name}
             </span>
           </Link>
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
-            {navLinks.map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                className="px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground rounded-md hover:bg-accent"
-              >
-                {label}
-              </Link>
-            ))}
+            {navLinks.map(({ href, label, external }) =>
+              external ? (
+                <a
+                  key={href}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground rounded-md hover:bg-accent"
+                >
+                  {label}
+                </a>
+              ) : (
+                <Link
+                  key={href}
+                  href={href}
+                  className="px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground rounded-md hover:bg-accent"
+                >
+                  {label}
+                </Link>
+              )
+            )}
           </nav>
 
           {/* Desktop Right Actions */}
@@ -104,16 +117,29 @@ export function Header() {
         <div className="md:hidden border-t border-border bg-background/95 backdrop-blur-md">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 py-4 flex flex-col gap-2">
             <nav className="flex flex-col gap-1" aria-label="Mobile navigation">
-              {navLinks.map(({ href, label }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground rounded-md hover:bg-accent transition-colors"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  {label}
-                </Link>
-              ))}
+              {navLinks.map(({ href, label, external }) =>
+                external ? (
+                  <a
+                    key={href}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground rounded-md hover:bg-accent transition-colors"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    {label}
+                  </a>
+                ) : (
+                  <Link
+                    key={href}
+                    href={href}
+                    className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground rounded-md hover:bg-accent transition-colors"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    {label}
+                  </Link>
+                )
+              )}
             </nav>
             <div className="mt-2 flex flex-col gap-2 border-t border-border pt-4">
               <Link

@@ -17,7 +17,7 @@ export function subscriptionEmailHtml({
   name,
   plan,
   renewalDate,
-  manageUrl = "https://sassany.com/dashboard/billing",
+  manageUrl = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/dashboard/billing`,
 }: SubscriptionEmailProps): string {
   const planFeatures: Record<string, string[]> = {
     Pro: [
@@ -48,7 +48,7 @@ export function subscriptionEmailHtml({
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Subscription Confirmed – Sassany ${plan}</title>
+  <title>Subscription Confirmed – Saasany ${plan}</title>
 </head>
 <body style="margin:0;padding:0;background-color:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f9fafb;padding:40px 16px;">
@@ -57,14 +57,14 @@ export function subscriptionEmailHtml({
         <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background-color:#ffffff;border-radius:12px;border:1px solid #e5e7eb;overflow:hidden;">
           <!-- Header -->
           <tr>
-            <td style="background-color:#000000;padding:32px 40px;text-align:center;">
+            <td style="background-color:#0D9276;padding:32px 40px;text-align:center;">
               <table cellpadding="0" cellspacing="0" style="margin:0 auto;">
                 <tr>
                   <td style="background-color:#ffffff;border-radius:8px;width:36px;height:36px;text-align:center;vertical-align:middle;">
                     <span style="font-size:18px;line-height:36px;display:inline-block;">⚡</span>
                   </td>
                   <td style="padding-left:10px;">
-                    <span style="color:#ffffff;font-size:20px;font-weight:700;letter-spacing:-0.3px;">Sassany</span>
+                    <span style="color:#ffffff;font-size:20px;font-weight:700;letter-spacing:-0.3px;">Saasany</span>
                   </td>
                 </tr>
               </table>
@@ -108,7 +108,7 @@ export function subscriptionEmailHtml({
               <!-- CTA Button -->
               <table cellpadding="0" cellspacing="0">
                 <tr>
-                  <td style="border-radius:8px;background-color:#000000;">
+                  <td style="border-radius:8px;background-color:#0D9276;">
                     <a href="${manageUrl}"
                        style="display:inline-block;padding:14px 28px;color:#ffffff;font-size:15px;font-weight:600;text-decoration:none;">
                       Manage Subscription →
@@ -131,7 +131,7 @@ export function subscriptionEmailHtml({
             <td style="padding:24px 40px 32px;">
               <p style="margin:0;font-size:13px;color:#9ca3af;line-height:1.5;">
                 Questions? Reply to this email or visit
-                <a href="https://sassany.com" style="color:#6b7280;text-decoration:underline;">sassany.com</a>.
+                <a href="${manageUrl.replace('/dashboard/billing', '')}" style="color:#6b7280;text-decoration:underline;">${manageUrl.replace('/dashboard/billing', '').replace('https://', '').replace('http://', '')}</a>.
                 You can cancel your subscription at any time — no questions asked.
               </p>
             </td>

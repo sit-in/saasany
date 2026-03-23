@@ -14,6 +14,7 @@ import { usePathname } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { signOut } from "@/lib/auth-client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { siteConfig } from "@/config/site";
 import {
   Sidebar,
   SidebarContent,
@@ -132,13 +133,13 @@ export function DashboardSidebar({
             <SidebarMenuButton
               size="lg"
               render={<Link href={`/${locale}/dashboard`} />}
-              tooltip="Sassany"
+              tooltip={siteConfig.name}
             >
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
                 <span className="text-sm font-bold">S</span>
               </div>
               <div className="flex flex-col gap-0.5 leading-none">
-                <span className="font-semibold">Sassany</span>
+                <span className="font-semibold">{siteConfig.name}</span>
                 <span className="text-xs text-muted-foreground">Dashboard</span>
               </div>
             </SidebarMenuButton>

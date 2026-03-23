@@ -20,7 +20,7 @@ export default async function PrivacyPage({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "privacy" });
-  const lastUpdated = "January 1, 2025";
+  const lastUpdated = "March 23, 2026";
 
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
@@ -64,7 +64,7 @@ export default async function PrivacyPage({
         <p>
           {t.rich("sections.contact.content", {
             email: (chunks) => (
-              <a href="mailto:privacy@sassany.com">{chunks}</a>
+              <a href="mailto:privacy@saasany.com">{chunks}</a>
             ),
           })}
         </p>
