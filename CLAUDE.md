@@ -79,3 +79,8 @@ Schema 在 `src/lib/db/schema.ts`，表包含：user, session, account, verifica
 ## 环境变量
 
 参考 `.env.example`，必填项：DATABASE_URL, BETTER_AUTH_SECRET, STRIPE 相关, OPENAI_API_KEY。
+- 新增环境变量必须同步更新 `.env.example`
+- `NEXT_PUBLIC_` 前缀的变量会暴露到客户端，注意安全
+
+## Commit 粒度
+- 每个功能点单独一个 commit，不要把不相关的改动合并到一个 commit

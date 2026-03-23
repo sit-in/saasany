@@ -1,6 +1,5 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { buttonVariants } from "@/components/ui/button";
 import { motion } from "framer-motion";
@@ -16,16 +15,11 @@ const fadeUp = {
   }),
 };
 
-// Decorative mock dashboard preview
 function DashboardPreview() {
   return (
     <div className="relative w-full max-w-4xl mx-auto mt-16 select-none">
-      {/* Glow */}
       <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-primary/20 via-primary/10 to-transparent blur-xl opacity-60 dark:opacity-40 pointer-events-none" />
-
-      {/* Browser chrome */}
       <div className="relative rounded-2xl border border-border bg-card shadow-2xl overflow-hidden">
-        {/* Title bar */}
         <div className="flex items-center gap-2 border-b border-border bg-muted/40 px-4 py-3">
           <div className="flex gap-1.5">
             <div className="h-3 w-3 rounded-full bg-red-400/70" />
@@ -36,29 +30,21 @@ function DashboardPreview() {
             <span className="text-xs text-muted-foreground">app.sassany.com/dashboard</span>
           </div>
         </div>
-
-        {/* Dashboard content */}
         <div className="flex" style={{ minHeight: 320 }}>
-          {/* Sidebar */}
           <div className="hidden sm:flex flex-col gap-2 w-44 border-r border-border bg-muted/20 p-3">
             {["Dashboard", "Analytics", "Users", "Billing", "Settings"].map((item, i) => (
               <div
                 key={item}
                 className={cn(
                   "h-8 rounded-md px-3 flex items-center text-xs font-medium",
-                  i === 0
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground"
+                  i === 0 ? "bg-primary text-primary-foreground" : "text-muted-foreground"
                 )}
               >
                 {item}
               </div>
             ))}
           </div>
-
-          {/* Main content */}
           <div className="flex-1 p-4 md:p-6 space-y-4">
-            {/* Stat cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {[
                 { label: "Revenue", value: "$12,480" },
@@ -72,8 +58,6 @@ function DashboardPreview() {
                 </div>
               ))}
             </div>
-
-            {/* Chart placeholder */}
             <div className="rounded-lg border border-border bg-background p-4 h-28 md:h-36 flex items-end gap-1 overflow-hidden">
               {[40, 65, 45, 80, 55, 70, 90, 60, 75, 85, 50, 95].map((h, i) => (
                 <div
@@ -83,8 +67,6 @@ function DashboardPreview() {
                 />
               ))}
             </div>
-
-            {/* Table rows placeholder */}
             <div className="rounded-lg border border-border bg-background divide-y divide-border">
               {[1, 2, 3].map((i) => (
                 <div key={i} className="flex items-center gap-3 px-4 py-2">
@@ -101,15 +83,19 @@ function DashboardPreview() {
   );
 }
 
-export function HeroSection() {
-  const t = useTranslations("hero");
+interface HeroSectionProps {
+  title: string;
+  subtitle: string;
+  cta: string;
+  secondaryCta: string;
+}
 
+export function HeroSection({ title, subtitle, cta, secondaryCta }: HeroSectionProps) {
   return (
     <section
       className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8 pt-24 pb-16"
       aria-label="Hero"
     >
-      {/* Background grid */}
       <div
         className="pointer-events-none absolute inset-0 -z-10"
         aria-hidden="true"
@@ -122,15 +108,12 @@ export function HeroSection() {
             backgroundSize: "60px 60px",
           }}
         />
-        {/* Radial gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/80 to-background" />
-        {/* Colored accent blobs */}
         <div className="absolute left-1/2 top-1/4 -translate-x-1/2 -translate-y-1/2 h-96 w-96 rounded-full bg-primary/5 dark:bg-primary/10 blur-3xl" />
         <div className="absolute right-1/4 top-1/3 h-64 w-64 rounded-full bg-blue-500/5 dark:bg-blue-500/10 blur-3xl" />
       </div>
 
       <div className="w-full max-w-5xl mx-auto text-center">
-        {/* Badge */}
         <motion.div
           custom={0}
           initial="hidden"
@@ -142,7 +125,6 @@ export function HeroSection() {
           Now in public beta
         </motion.div>
 
-        {/* Title */}
         <motion.h1
           custom={0.1}
           initial="hidden"
@@ -150,10 +132,9 @@ export function HeroSection() {
           variants={fadeUp}
           className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1]"
         >
-          {t("title")}
+          {title}
         </motion.h1>
 
-        {/* Subtitle */}
         <motion.p
           custom={0.2}
           initial="hidden"
@@ -161,10 +142,9 @@ export function HeroSection() {
           variants={fadeUp}
           className="mt-6 max-w-2xl mx-auto text-lg sm:text-xl leading-8 text-muted-foreground"
         >
-          {t("subtitle")}
+          {subtitle}
         </motion.p>
 
-        {/* CTA Buttons */}
         <motion.div
           custom={0.3}
           initial="hidden"
@@ -179,7 +159,7 @@ export function HeroSection() {
               "h-12 px-8 text-base rounded-full"
             )}
           >
-            {t("cta")}
+            {cta}
             <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
           <Link
@@ -190,11 +170,10 @@ export function HeroSection() {
             )}
           >
             <Play className="mr-2 h-4 w-4" />
-            {t("secondaryCta")}
+            {secondaryCta}
           </Link>
         </motion.div>
 
-        {/* Social proof */}
         <motion.p
           custom={0.4}
           initial="hidden"
@@ -205,7 +184,6 @@ export function HeroSection() {
           No credit card required &middot; Free to start
         </motion.p>
 
-        {/* Dashboard Preview */}
         <motion.div
           custom={0.5}
           initial="hidden"

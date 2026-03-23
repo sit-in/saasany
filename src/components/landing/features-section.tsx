@@ -1,27 +1,11 @@
-"use client";
-
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Shield, CreditCard, Sparkles, Globe, LayoutDashboard, Search } from "lucide-react";
-import { motion } from "framer-motion";
 
 const icons = [Shield, CreditCard, Sparkles, Globe, LayoutDashboard, Search] as const;
 const featureKeys = ["authentication", "payments", "ai", "i18n", "dashboard", "seo"] as const;
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5,
-      delay: i * 0.08,
-      ease: "easeOut" as const,
-    },
-  }),
-};
-
-export function FeaturesSection() {
-  const t = useTranslations("features");
+export async function FeaturesSection({ locale }: { locale: string }) {
+  const t = await getTranslations({ locale, namespace: "features" });
 
   return (
     <section
@@ -32,25 +16,15 @@ export function FeaturesSection() {
       <div className="mx-auto max-w-7xl">
         {/* Header */}
         <div className="text-center mb-16">
-          <motion.h2
+          <h2
             id="features-heading"
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
             className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground"
           >
             {t("title")}
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto"
-          >
+          </h2>
+          <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
             {t("subtitle")}
-          </motion.p>
+          </p>
         </div>
 
         {/* Feature Cards Grid */}
@@ -58,34 +32,26 @@ export function FeaturesSection() {
           {featureKeys.map((key, i) => {
             const Icon = icons[i];
             return (
-              <motion.div
+              <div
                 key={key}
-                custom={i}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "-60px" }}
-                variants={cardVariants}
+                className="group relative flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:border-border/60 hover:shadow-lg hover:-translate-y-0.5"
+                aria-label={t(`items.${key}.title`)}
               >
-                <div
-                  className="group relative flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:border-border/60 hover:shadow-lg hover:-translate-y-0.5"
-                  aria-label={t(`items.${key}.title`)}
-                >
-                  {/* Icon */}
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary/15">
-                    <Icon className="h-5 w-5" />
-                  </div>
-
-                  {/* Content */}
-                  <div>
-                    <h3 className="text-base font-semibold text-foreground">
-                      {t(`items.${key}.title`)}
-                    </h3>
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                      {t(`items.${key}.description`)}
-                    </p>
-                  </div>
+                {/* Icon */}
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary/15">
+                  <Icon className="h-5 w-5" />
                 </div>
-              </motion.div>
+
+                {/* Content */}
+                <div>
+                  <h3 className="text-base font-semibold text-foreground">
+                    {t(`items.${key}.title`)}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                    {t(`items.${key}.description`)}
+                  </p>
+                </div>
+              </div>
             );
           })}
         </div>
