@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ThemeToggle } from "./theme-toggle";
+import { ThemeSwitcher } from "./theme-switcher";
 import { LocaleSwitcher } from "./locale-switcher";
 import { Menu, X, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -77,6 +78,7 @@ export function Header() {
           {/* Desktop Right Actions */}
           <div className="hidden md:flex items-center gap-1">
             <LocaleSwitcher />
+            <ThemeSwitcher />
             <ThemeToggle />
             <div className="ml-2 flex items-center gap-2">
               <Link
@@ -97,6 +99,7 @@ export function Header() {
           {/* Mobile Menu Button */}
           <div className="flex md:hidden items-center gap-1">
             <LocaleSwitcher />
+            <ThemeSwitcher />
             <ThemeToggle />
             <Button
               variant="ghost"
