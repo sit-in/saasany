@@ -1,20 +1,20 @@
 ---
-title: "快速上手 Sassany"
-description: "几分钟内用 Sassany 搭建你的 AI SaaS 产品，比以往更快地交付。"
+title: "快速上手 Saasany"
+description: "几分钟内用 Saasany 搭建你的 AI SaaS 产品，比以往更快地交付。"
 date: "2024-03-01"
-author: "Sassany 团队"
-image: "/images/blog/getting-started.jpg"
+author: "Saasany 团队"
+image: "/images/blog/getting-started.svg"
 ---
 
-## 欢迎使用 Sassany
+## 欢迎使用 Saasany
 
-Sassany 是一个生产级 Next.js 启动模板，专为希望快速上线 AI SaaS 产品的开发者设计。内置了用户认证、支付、AI 集成和国际化支持，让你能在一个周末内从零打造出完整可用的产品。
+Saasany 是一个生产级 Next.js 启动模板，专为希望快速上线 AI SaaS 产品的开发者设计。内置了用户认证、支付、AI 集成和国际化支持，让你能在一个周末内从零打造出完整可用的产品。
 
 本指南将带你完成在本地运行项目并部署到生产环境的所有步骤。
 
 ## 前置条件
 
-开始之前，请确保已安装 Node.js 18 或更高版本，并准备好 Sassany 集成所需的各项服务账号：数据库服务商（推荐使用 Neon 的无服务器 Postgres）、Stripe 用于支付、兼容 OpenAI 的 API 密钥用于 AI 功能，以及 Resend 用于发送邮件。
+开始之前，请确保已安装 Node.js 18 或更高版本，并准备好 Saasany 集成所需的各项服务账号：数据库服务商（推荐使用 Neon 的无服务器 Postgres）、Stripe 用于支付、兼容 OpenAI 的 API 密钥用于 AI 功能，以及 Resend 用于发送邮件。
 
 克隆仓库后，将 `.env.example` 复制为 `.env.local`，然后填入你的凭据。所有环境变量名称均一目了然，每个变量都附有内联注释说明其用途。
 
@@ -26,6 +26,6 @@ Sassany 是一个生产级 Next.js 启动模板，专为希望快速上线 AI Sa
 
 ## 部署到生产环境
 
-Sassany 专为 Vercel 设计，无需任何额外配置即可部署。将代码推送到 GitHub，在 Vercel 中连接仓库，在控制台填入环境变量，点击部署——整个过程不到五分钟。
+Saasany 专为 Vercel 设计，无需任何额外配置即可部署。将代码推送到 GitHub，在 Vercel 中连接仓库，在控制台填入环境变量，点击部署——整个过程不到五分钟。
 
 部署完成后，前往 Stripe 控制台配置 Webhook 端点，将订阅事件转发到你的应用。Webhook 处理器已内置在 `/api/webhooks/stripe`，只需将 Stripe 指向你的生产环境 URL 即可。

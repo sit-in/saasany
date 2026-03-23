@@ -1,13 +1,20 @@
 export const siteConfig = {
-  name: "Sassany",
+  name: "Saasany",
   url: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
   description: "Build your AI SaaS product in a weekend",
-  links: {
-    github: "https://github.com/sassany",
-    twitter: "https://twitter.com/sassany",
-    discord: "https://discord.gg/sassany",
+  email: {
+    from: process.env.RESEND_FROM_EMAIL ?? `${process.env.NEXT_PUBLIC_APP_NAME || "Saasany"} <noreply@${process.env.NEXT_PUBLIC_APP_DOMAIN || "saasany.com"}>`,
+    support: `support@${process.env.NEXT_PUBLIC_APP_DOMAIN || "saasany.com"}`,
+    privacy: `privacy@${process.env.NEXT_PUBLIC_APP_DOMAIN || "saasany.com"}`,
+    legal: `legal@${process.env.NEXT_PUBLIC_APP_DOMAIN || "saasany.com"}`,
   },
-  creator: "Sassany",
+  links: {
+    // Replace these with your own links
+    github: "https://github.com/sit-in/saasany",
+    twitter: "",
+    discord: "",
+  },
+  creator: "Saasany",
   keywords: [
     "AI",
     "SaaS",

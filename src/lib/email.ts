@@ -1,10 +1,11 @@
 import { Resend } from "resend";
 import { welcomeEmailHtml } from "@/components/emails/welcome-email";
 import { subscriptionEmailHtml } from "@/components/emails/subscription-email";
+import { siteConfig } from "@/config/site";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const FROM = process.env.RESEND_FROM_EMAIL ?? "Sassany <noreply@sassany.com>";
+const FROM = siteConfig.email.from;
 
 export interface EmailResult {
   success: boolean;
@@ -20,7 +21,7 @@ export async function sendWelcomeEmail(
     const { data, error } = await resend.emails.send({
       from: FROM,
       to,
-      subject: `Welcome to Sassany, ${name}!`,
+      subject: `Welcome to Saasany, ${name}!`,
       html: welcomeEmailHtml({ name }),
     });
 

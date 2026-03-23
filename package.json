@@ -1,6 +1,17 @@
 {
-  "name": "sassany",
+  "name": "saasany",
   "version": "0.1.0",
+  "description": "Production-ready Next.js 16 template for AI SaaS products. Auth, Stripe, AI chat, i18n (EN/ZH) — ship in a weekend.",
+  "author": "Saasany",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sit-in/saasany"
+  },
+  "homepage": "https://saasany.com",
+  "bugs": {
+    "url": "https://github.com/sit-in/saasany/issues"
+  },
   "private": true,
   "scripts": {
     "dev": "next dev",

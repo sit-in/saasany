@@ -56,7 +56,7 @@ export function BillingClient({
     "Advanced authentication",
     "Full analytics dashboard",
     "Custom domain support",
-    "Remove Sassany branding",
+    "Remove Saasany branding",
   ];
 
   const freeFeatures = [

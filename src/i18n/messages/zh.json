@@ -1,6 +1,6 @@
 {
   "site": {
-    "name": "Sassany",
+    "name": "Saasany",
     "description": "在一个周末内构建你的 AI SaaS 产品"
   },
   "nav": {
@@ -85,7 +85,7 @@
         "高级认证功能",
         "完整数据分析控制台",
         "自定义域名支持",
-        "移除 Sassany 品牌标识"
+        "移除 Saasany 品牌标识"
       ],
       "cta": "开始专业版试用",
       "ctaYearly": "开始专业版试用（按年）"
@@ -94,7 +94,7 @@
     "redirecting": "正在跳转到结算页面..."
   },
   "footer": {
-    "copyright": "© {year} Sassany 版权所有",
+    "copyright": "© {year} Saasany 版权所有",
     "links": {
       "privacy": "隐私政策",
       "terms": "服务条款"
@@ -289,7 +289,7 @@
   "privacy": {
     "title": "隐私政策",
     "lastUpdated": "最后更新：{date}",
-    "intro": "Sassany 致力于保护你的隐私。本隐私政策说明了我们在你使用服务时如何收集、使用、披露和保护你的信息。",
+    "intro": "Saasany 致力于保护你的隐私。本隐私政策说明了我们在你使用服务时如何收集、使用、披露和保护你的信息。",
     "sections": {
       "collect": {
         "title": "我们收集的信息",
@@ -324,14 +324,14 @@
       },
       "contact": {
         "title": "联系我们",
-        "content": "如对本隐私政策有任何疑问，请通过 <email>privacy@sassany.com</email> 与我们联系。"
+        "content": "如对本隐私政策有任何疑问，请通过 <email>privacy@saasany.com</email> 与我们联系。"
       }
     }
   },
   "terms": {
     "title": "服务条款",
     "lastUpdated": "最后更新：{date}",
-    "intro": "请在使用 Sassany 之前仔细阅读本服务条款。访问或使用我们的服务，即表示你同意受本条款约束。",
+    "intro": "请在使用 Saasany 之前仔细阅读本服务条款。访问或使用我们的服务，即表示你同意受本条款约束。",
     "sections": {
       "acceptance": {
         "title": "条款接受",
@@ -339,11 +339,11 @@
       },
       "use": {
         "title": "合规使用",
-        "content": "你同意仅以合法目的使用 Sassany，且不得侵犯他人权利。你不得：",
+        "content": "你同意仅以合法目的使用 Saasany，且不得侵犯他人权利。你不得：",
         "items": {
           "lawful": "将服务用于任何违法目的或违反任何适用法律",
           "noAbuse": "试图未经授权访问服务或其相关系统的任何部分",
-          "noInfringe": "侵犯 Sassany 或他人的知识产权"
+          "noInfringe": "侵犯 Saasany 或他人的知识产权"
         }
       },
       "account": {
@@ -356,7 +356,7 @@
       },
       "ip": {
         "title": "知识产权",
-        "content": "Sassany 平台及其原始内容、功能和特性归 Sassany 所有，受国际版权、商标及其他知识产权法律保护。"
+        "content": "Saasany 平台及其原始内容、功能和特性归 Saasany 所有，受国际版权、商标及其他知识产权法律保护。"
       },
       "disclaimer": {
         "title": "免责声明",
@@ -364,7 +364,7 @@
       },
       "limitation": {
         "title": "责任限制",
-        "content": "在适用法律允许的最大范围内，Sassany 不对任何间接、偶发、特殊、后果性或惩罚性损害，或任何利润或收入损失承担责任，无论是直接还是间接产生的。"
+        "content": "在适用法律允许的最大范围内，Saasany 不对任何间接、偶发、特殊、后果性或惩罚性损害，或任何利润或收入损失承担责任，无论是直接还是间接产生的。"
       },
       "termination": {
         "title": "终止",
@@ -372,7 +372,7 @@
       },
       "contact": {
         "title": "联系我们",
-        "content": "如对本服务条款有任何疑问，请通过 <email>legal@sassany.com</email> 与我们联系。"
+        "content": "如对本服务条款有任何疑问，请通过 <email>legal@saasany.com</email> 与我们联系。"
       }
     }
   }
