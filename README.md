@@ -1,100 +1,47 @@
-<h1 align="center">Saasany</h1>
+# saasany
 
-<p align="center">
-  <strong>Ship your AI SaaS in a weekend.</strong><br>
-  Production-ready Next.js 16 template with auth, payments, AI, and i18n built in.
-</p>
+> AI SaaS 全栈模板。认证、支付、AI 对话、国际化，开箱即用。
 
-<p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="MIT License"></a>
-  <img src="https://img.shields.io/badge/Next.js-16-black" alt="Next.js 16">
-  <img src="https://img.shields.io/badge/React-19-blue" alt="React 19">
-  <img src="https://img.shields.io/badge/TypeScript-5-blue" alt="TypeScript">
-  <img src="https://img.shields.io/badge/i18n-EN%20%7C%20ZH-orange" alt="i18n EN|ZH">
-</p>
-
-<!-- Add a screenshot here: ![Saasany](./public/screenshot.png) -->
-
----
-
-## Why Saasany?
-
-Most SaaS templates give you auth and payments. Saasany gives you a complete product:
-
-- **AI-native** — Streaming chat and text generation with OpenAI, ready to swap models
-- **Bilingual out of the box** — English + Chinese i18n with `next-intl`. Built for global markets (出海)
-- **Opinionated design system** — Instrument Serif + DM Sans + warm emerald palette. Not another generic template
-- **Actually production-ready** — Stripe webhooks, email templates, admin panel, API keys, legal pages
-
-## Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| Framework | Next.js 16 (App Router) + React 19 |
-| Language | TypeScript |
-| Styling | Tailwind CSS v4 + shadcn/ui |
-| Database | Drizzle ORM + Neon (PostgreSQL) |
-| Auth | Better Auth (email/password + OAuth) |
-| Payments | Stripe (Checkout + Webhooks + Portal) |
-| AI | Vercel AI SDK + OpenAI |
-| Email | Resend |
-| i18n | next-intl (EN/ZH) |
-| Fonts | Instrument Serif + DM Sans + Geist Mono |
-
-## Features
-
-| Category | What you get |
-|----------|-------------|
-| **Auth** | Email/password, GitHub OAuth, session management |
-| **Payments** | Stripe subscriptions, checkout, customer portal, webhooks |
-| **AI** | Streaming chat, text generation, configurable models |
-| **Dashboard** | Collapsible sidebar, stats cards, settings, billing |
-| **Admin** | User management, subscription stats, role-based access |
-| **Blog** | MDX-based with i18n support |
-| **API Keys** | Generate, list, revoke |
-| **i18n** | English + Chinese, URL-prefix routing |
-| **Dark Mode** | System-aware theme switching |
-| **SEO** | Sitemap, robots.txt, dynamic OG images, metadata API |
-| **Email** | Welcome + subscription confirmation templates |
-| **Legal** | Privacy Policy, Terms of Service |
+[![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+![Next.js 16](https://img.shields.io/badge/Next.js-16-black)
 
 ## Quick Start
 
 ```bash
-# 1. Clone
 git clone https://github.com/sit-in/saasany.git my-saas
 cd my-saas
-
-# 2. Install
 npm install
-
-# 3. Configure
-cp .env.example .env.local
-# Fill in your API keys (see Environment Variables below)
-
-# 4. Set up database
-npm run db:push
-
-# 5. Run
-npm run dev
+cp .env.example .env.local   # 填入你的 API keys
+npm run db:push               # 初始化数据库
+npm run dev                   # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+## What's Included
 
-## Environment Variables
+- **Auth** — 邮箱密码 + GitHub OAuth，session 管理
+- **Payments** — Stripe 订阅、Checkout、Customer Portal、Webhooks
+- **AI** — 流式对话 + 文本生成，支持切换模型
+- **Dashboard** — 可折叠侧边栏、数据卡片、设置、账单
+- **Admin** — 用户管理、订阅统计、角色权限
+- **Blog** — MDX + i18n
+- **API Keys** — 生成、列表、撤销
+- **i18n** — 中英双语，URL prefix 路由
+- **Dark Mode** — 跟随系统
+- **SEO** — Sitemap、robots.txt、动态 OG 图片
 
-| Variable | Where to get it |
-|----------|----------------|
-| `DATABASE_URL` | [Neon Console](https://console.neon.tech) |
-| `BETTER_AUTH_SECRET` | Run `openssl rand -base64 32` |
-| `STRIPE_SECRET_KEY` | [Stripe Dashboard](https://dashboard.stripe.com/apikeys) |
-| `STRIPE_WEBHOOK_SECRET` | `stripe listen --forward-to localhost:3000/api/stripe/webhook` |
-| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | [Stripe Dashboard](https://dashboard.stripe.com/apikeys) |
-| `OPENAI_API_KEY` | [OpenAI Platform](https://platform.openai.com/api-keys) |
-| `RESEND_API_KEY` | [Resend Dashboard](https://resend.com/api-keys) |
-| `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` | [GitHub OAuth Apps](https://github.com/settings/developers) (optional) |
+## Stack
 
-See [`.env.example`](.env.example) for the full list.
+```
+Next.js 16 (App Router) + React 19 + TypeScript
+Tailwind CSS v4 + shadcn/ui
+Drizzle ORM + Neon PostgreSQL
+Better Auth (email + OAuth)
+Stripe (subscriptions + webhooks)
+Vercel AI SDK + OpenAI
+next-intl (EN/ZH)
+Resend (email)
+Instrument Serif + DM Sans + Geist Mono
+```
 
 ## Project Structure
 
@@ -102,94 +49,92 @@ See [`.env.example`](.env.example) for the full list.
 src/
 ├── app/
 │   ├── [locale]/
-│   │   ├── (auth)/          # Sign in, sign up, forgot password
-│   │   ├── (dashboard)/     # Dashboard, settings, billing, AI, admin
-│   │   ├── (marketing)/     # Blog, pricing, privacy, terms
-│   │   └── page.tsx         # Landing page
+│   │   ├── (auth)/            # 登录、注册、忘记密码
+│   │   ├── (dashboard)/       # Dashboard、设置、账单、AI、管理
+│   │   ├── (marketing)/       # 博客、定价、隐私、条款
+│   │   └── page.tsx           # 落地页
 │   └── api/
-│       ├── ai/              # Chat and generation endpoints
-│       ├── auth/            # Better Auth handler
-│       ├── keys/            # API key management
-│       ├── og/              # Dynamic OG image generation
-│       └── stripe/          # Checkout, webhook, portal
+│       ├── ai/                # 对话 + 生成
+│       ├── auth/              # Better Auth
+│       ├── keys/              # API Key 管理
+│       ├── og/                # OG 图片生成
+│       └── stripe/            # Checkout、Webhook、Portal
 ├── components/
-│   ├── dashboard/           # Sidebar, header
-│   ├── emails/              # Email templates (React)
-│   ├── landing/             # Hero, features, pricing
-│   ├── layout/              # Header, footer, theme, locale switcher
-│   └── ui/                  # shadcn/ui components
-├── config/
-│   └── site.ts              # Site config, pricing plans, email addresses
-├── content/
-│   └── blog/                # MDX blog posts (en/ + zh/)
-├── i18n/
-│   └── messages/            # Translation files (en.json, zh.json)
+│   ├── dashboard/             # 侧边栏
+│   ├── emails/                # 邮件模板
+│   ├── landing/               # Hero、Features、Pricing
+│   ├── layout/                # Header、Footer、主题、语言切换
+│   └── ui/                    # shadcn/ui
+├── config/site.ts             # 站点配置（改品牌名从这里开始）
+├── content/blog/              # MDX 博客 (en/ + zh/)
+├── i18n/messages/             # 翻译文件
 └── lib/
-    ├── db/                  # Drizzle schema and connection
-    ├── auth.ts              # Better Auth server config
-    ├── email.ts             # Resend email functions
-    ├── stripe.ts            # Stripe instance
-    └── ai.ts                # AI model config
+    ├── db/                    # Drizzle schema
+    ├── auth.ts                # 认证配置
+    ├── email.ts               # 邮件
+    ├── stripe.ts              # Stripe
+    └── ai.ts                  # AI 模型配置
 ```
 
-## Customization
+## Environment Variables
 
-### Branding
-Edit `src/config/site.ts` — site name, description, email addresses, and social links are all in one file.
+```bash
+DATABASE_URL=                  # Neon Console → https://console.neon.tech
+BETTER_AUTH_SECRET=            # openssl rand -base64 32
+STRIPE_SECRET_KEY=             # Stripe Dashboard
+STRIPE_WEBHOOK_SECRET=         # stripe listen --forward-to localhost:3000/api/stripe/webhook
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
+OPENAI_API_KEY=                # OpenAI Platform
+RESEND_API_KEY=                # Resend Dashboard
+GITHUB_CLIENT_ID=              # (optional) GitHub OAuth Apps
+GITHUB_CLIENT_SECRET=          # (optional)
+```
 
-### Colors
-Edit `src/app/globals.css` — all colors use OKLCH CSS variables. See `DESIGN.md` for the full design system.
+完整列表见 [`.env.example`](.env.example)。
 
-### Fonts
-Fonts are loaded in `src/app/[locale]/layout.tsx` via `next/font/google`. Default: Instrument Serif (headings) + DM Sans (body) + Geist Mono (code).
+## Customize
 
-### Add a language
-1. Add locale to `src/i18n/config.ts`
-2. Create `src/i18n/messages/<locale>.json`
-3. Add blog content in `src/content/blog/<locale>/`
+**品牌** — 改 `src/config/site.ts`，站名、邮箱、社交链接全在一个文件。
 
-### Change AI model
-Edit `src/lib/ai.ts` — supports any provider compatible with Vercel AI SDK.
+**配色** — 改 `src/app/globals.css`，OKLCH 变量。设计系统文档见 `DESIGN.md`。
+
+**AI 模型** — 改 `src/lib/ai.ts`，支持 Vercel AI SDK 所有 provider。
+
+**加语言** — `src/i18n/config.ts` 加 locale → `src/i18n/messages/` 加翻译文件 → `src/content/blog/` 加内容。
+
+## Deploy
+
+```bash
+# Vercel (推荐)
+# 1. Push to GitHub
+# 2. Import in Vercel → vercel.com/new
+# 3. 填环境变量
+# 4. Deploy
+
+# Stripe Webhook (生产环境)
+# Dashboard → Webhooks → https://yourdomain.com/api/stripe/webhook
+# Events: checkout.session.completed, customer.subscription.updated, customer.subscription.deleted
+```
 
 ## Commands
 
 ```bash
-npm run dev            # Development server
-npm run build          # Production build
-npm run lint           # ESLint check
-npm run db:push        # Push schema to database
-npm run db:generate    # Generate migration files
-npm run db:studio      # Open Drizzle Studio
+npm run dev            # 开发
+npm run build          # 构建
+npm run lint           # 检查
+npm run db:push        # 推 schema
+npm run db:studio      # Drizzle Studio
 ```
-
-## Deployment
-
-### Vercel (Recommended)
-
-1. Push to GitHub
-2. Import in [Vercel](https://vercel.com/new)
-3. Add environment variables
-4. Deploy
-
-### Stripe Webhook (Production)
-
-Create a webhook in Stripe Dashboard pointing to `https://yourdomain.com/api/stripe/webhook`.
-
-Events to listen for:
-- `checkout.session.completed`
-- `customer.subscription.updated`
-- `customer.subscription.deleted`
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, code conventions, and PR guidelines.
+见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
 ## AI 编程出海训练营
 
-This template is a project from the **[AI 编程出海训练营](https://chuhai.fyyd.net/)** (AI Coding Bootcamp for Global Markets). Learn to build and ship AI SaaS products for international markets using modern tools and AI-assisted development.
+来自 **[AI 编程出海训练营](https://chuhai.fyyd.net/)**。用 AI 编程，做出海 SaaS。
 
-- 训练营官网：https://chuhai.fyyd.net/
-- 微信咨询：257735
+官网：https://chuhai.fyyd.net/ · 微信：257735
 
 ## License
 
