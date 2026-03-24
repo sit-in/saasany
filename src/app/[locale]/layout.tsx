@@ -6,6 +6,8 @@ import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import type { Locale } from '@/i18n/config';
 import { ThemeProvider } from '@/components/layout/theme-provider';
+import { RootProvider } from 'fumadocs-ui/provider/next';
+import 'fumadocs-ui/style.css';
 import '../globals.css';
 
 const dmSans = DM_Sans({
@@ -84,9 +86,11 @@ export default async function LocaleLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <NextIntlClientProvider messages={messages}>
-            {children}
-          </NextIntlClientProvider>
+          <RootProvider>
+            <NextIntlClientProvider messages={messages}>
+              {children}
+            </NextIntlClientProvider>
+          </RootProvider>
         </ThemeProvider>
       </body>
     </html>

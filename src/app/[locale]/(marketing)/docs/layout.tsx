@@ -1,12 +1,11 @@
-import { DocsSidebar } from "@/components/docs/docs-sidebar";
+import { DocsLayout } from "fumadocs-ui/layouts/docs";
+import type { ReactNode } from "react";
+import { source } from "@/lib/source";
 
-export default function DocsLayout({ children }: { children: React.ReactNode }) {
+export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex gap-8">
-        <DocsSidebar />
-        {children}
-      </div>
-    </div>
+    <DocsLayout tree={source.pageTree} nav={{ title: "Saasany Docs" }}>
+      {children}
+    </DocsLayout>
   );
 }

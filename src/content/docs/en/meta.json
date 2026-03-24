@@ -1,0 +1,17 @@
+{
+  "title": "Docs",
+  "pages": [
+    "getting-started",
+    "configuration",
+    "deployment",
+    "---Guide---",
+    "authentication",
+    "database",
+    "i18n",
+    "themes",
+    "---Extensions---",
+    "payments",
+    "ai-integration",
+    "email"
+  ]
+}

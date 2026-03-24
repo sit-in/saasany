@@ -33,7 +33,7 @@ vercel --prod
 
 在 Vercel 项目的 **Settings > Environment Variables** 中添加以下变量：
 
-```env
+```bash
 # 应用
 NEXT_PUBLIC_APP_URL=https://yourdomain.com
 NEXT_PUBLIC_APP_DOMAIN=yourdomain.com
@@ -101,7 +101,7 @@ stripe listen --forward-to localhost:3000/api/stripe/webhook
 
 域名生效后，更新以下变量：
 
-```env
+```bash
 NEXT_PUBLIC_APP_URL=https://yourdomain.com
 BETTER_AUTH_URL=https://yourdomain.com
 NEXT_PUBLIC_BETTER_AUTH_URL=https://yourdomain.com

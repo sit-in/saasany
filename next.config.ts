@@ -1,13 +1,15 @@
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
+import { createMDX } from 'fumadocs-mdx/next';
 
 const withNextIntl = createNextIntlPlugin(
-  // 指向 request.ts（next-intl 4.x 默认路径为 ./src/i18n/request.ts）
   './src/i18n/request.ts'
 );
+
+const withMDX = createMDX();
 
 const nextConfig: NextConfig = {
   /* config options here */
 };
 
-export default withNextIntl(nextConfig);
+export default withMDX(withNextIntl(nextConfig));
