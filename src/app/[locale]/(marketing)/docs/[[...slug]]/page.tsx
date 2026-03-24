@@ -5,7 +5,7 @@ import {
   DocsTitle,
   DocsDescription,
 } from "fumadocs-ui/page";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import defaultMdxComponents from "fumadocs-ui/mdx";
 import type { Metadata } from "next";
 
@@ -15,6 +15,9 @@ export default async function Page({
   params: Promise<{ locale: string; slug?: string[] }>;
 }) {
   const { locale, slug } = await params;
+  if (!slug || slug.length === 0) {
+    redirect(`/${locale}/docs/getting-started`);
+  }
   const page = source.getPage(slug, locale);
   if (!page) notFound();
 
