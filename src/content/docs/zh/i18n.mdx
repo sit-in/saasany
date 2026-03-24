@@ -1,0 +1,143 @@
+---
+title: "国际化"
+description: "使用 next-intl 实现中英文切换，在服务端和客户端组件中正确使用翻译"
+order: 6
+---
+
+## 国际化方案
+
+Saasany 使用 [next-intl](https://next-intl-docs.vercel.app/) 实现国际化，开箱支持中文和英文：
+
+- URL 前缀策略：`as-needed`（默认语言不加前缀，非默认加 `/zh` 前缀）
+- 默认语言：英文（`en`）
+- 翻译文件：`src/i18n/messages/en.json` 和 `src/i18n/messages/zh.json`
+
+## 配置文件
+
+语言配置在 `src/i18n/config.ts`：
+
+```typescript
+export const locales = ['en', 'zh'] as const;
+export type Locale = (typeof locales)[number];
+export const defaultLocale: Locale = 'en';
+```
+
+## 服务端组件中使用
+
+在 Server Component 中用 `getTranslations`：
+
+```typescript
+import { getTranslations } from "next-intl/server";
+
+export default async function PricingPage() {
+  const t = await getTranslations("pricing");
+
+  return (
+    <div>
+      <h1>{t("title")}</h1>
+      <p>{t("description")}</p>
+    </div>
+  );
+}
+```
+
+## 客户端组件中使用
+
+在 Client Component 中用 `useTranslations` hook：
+
+```typescript
+"use client";
+
+import { useTranslations } from "next-intl";
+
+export function FeatureCard() {
+  const t = useTranslations("features");
+
+  return (
+    <div>
+      <h3>{t("aiChat.title")}</h3>
+      <p>{t("aiChat.description")}</p>
+    </div>
+  );
+}
+```
+
+## 翻译文件结构
+
+翻译文件使用嵌套 JSON 格式，`en.json` 和 `zh.json` 的 key 必须完全一致：
+
+```json
+// src/i18n/messages/zh.json
+{
+  "common": {
+    "loading": "加载中...",
+    "error": "出错了",
+    "save": "保存",
+    "cancel": "取消"
+  },
+  "pricing": {
+    "title": "选择适合你的方案",
+    "description": "灵活的定价，随时升降级"
+  }
+}
+```
+
+## 导航链接
+
+导航必须使用 next-intl 提供的版本，确保自动携带 locale 前缀：
+
+```typescript
+// 始终使用 i18n 版本的导航 API
+import { Link, redirect, useRouter } from "@/i18n/navigation";
+
+// 正确
+<Link href="/dashboard">控制台</Link>
+
+// 错误 — 不要用 next/link
+import Link from "next/link"; // 不要这样做！
+```
+
+## 页面 Metadata
+
+使用 `generateMetadata` 导出国际化的页面标题：
+
+```typescript
+import { getTranslations } from "next-intl/server";
+
+export async function generateMetadata() {
+  const t = await getTranslations("pricing");
+  return {
+    title: t("title"),
+    description: t("description"),
+  };
+}
+```
+
+## 添加新语言
+
+以添加日语为例：
+
+### 第一步：注册语言
+
+```typescript
+// src/i18n/config.ts
+export const locales = ['en', 'zh', 'ja'] as const;
+```
+
+### 第二步：创建翻译文件
+
+```bash
+cp src/i18n/messages/en.json src/i18n/messages/ja.json
+```
+
+翻译 `ja.json` 中的所有文案值（保持 key 不变）。
+
+### 第三步：更新中间件
+
+确保 `src/middleware.ts` 中的 next-intl 配置会自动读取 `config.ts` 中的 `locales`，通常不需要额外修改。
+
+## 注意事项
+
+- **API 路由不走 i18n 中间件**：`src/app/api/` 下的路由不需要也不应该使用 next-intl
+- **两个翻译文件的 key 必须对齐**：添加或修改任何翻译 key 时，`en.json` 和 `zh.json` 必须同步更新
+- **服务端组件不能用 hook**：`useTranslations` 只能在 `"use client"` 组件中使用，服务端用 `getTranslations`

@@ -1,0 +1,151 @@
+---
+title: "Email"
+description: "Resend integration for transactional emails — setup, templates, and sending welcome and subscription confirmation emails."
+order: 10
+---
+
+## Overview
+
+Saasany uses [Resend](https://resend.com/) for transactional emails. Two email types are included: welcome emails (on sign-up) and subscription confirmation emails (on payment). The email logic lives in `src/lib/email.ts`.
+
+## Setup
+
+### 1. Create a Resend Account
+
+Sign up at [resend.com](https://resend.com/) and get your API key.
+
+### 2. Environment Variables
+
+```bash
+RESEND_API_KEY=re_xxx
+RESEND_FROM_EMAIL=YourApp <noreply@yourdomain.com>
+```
+
+### 3. Domain Verification (Production)
+
+For production, verify your domain in the Resend dashboard and add the required DNS records (SPF, DKIM). Without domain verification, you can only send to your own email address.
+
+## Email Functions
+
+The `src/lib/email.ts` module exports two functions:
+
+### Welcome Email
+
+Sent when a new user signs up:
+
+```typescript
+import { sendWelcomeEmail } from "@/lib/email";
+
+const result = await sendWelcomeEmail("user@example.com", "John");
+
+if (result.success) {
+  console.log("Email sent:", result.id);
+} else {
+  console.error("Failed:", result.error);
+}
+```
+
+### Subscription Email
+
+Sent when a user subscribes to a paid plan:
+
+```typescript
+import { sendSubscriptionEmail } from "@/lib/email";
+
+const result = await sendSubscriptionEmail(
+  "user@example.com",
+  "John",
+  "Pro",
+  "2025-04-01"  // optional renewal date
+);
+```
+
+### Return Type
+
+Both functions return an `EmailResult`:
+
+```typescript
+interface EmailResult {
+  success: boolean;
+  id?: string;    // Resend message ID on success
+  error?: string; // Error message on failure
+}
+```
+
+## Email Templates
+
+Templates are React components that render to HTML strings. They live in `src/components/emails/`:
+
+- `welcome-email.tsx` — Welcome message with the user's name
+- `subscription-email.tsx` — Subscription confirmation with plan and renewal date
+
+### Template Pattern
+
+Each template exports an HTML generator function:
+
+```typescript
+// src/components/emails/welcome-email.tsx
+interface WelcomeEmailProps {
+  name: string;
+}
+
+export function welcomeEmailHtml({ name }: WelcomeEmailProps): string {
+  return `
+    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+      <h1>Welcome, ${name}!</h1>
+      <p>Thanks for joining. We're excited to have you on board.</p>
+    </div>
+  `;
+}
+```
+
+## Sender Configuration
+
+The sender address is configured in `src/config/site.ts` and used by all email functions:
+
+```typescript
+email: {
+  from: process.env.RESEND_FROM_EMAIL
+    ?? `${process.env.NEXT_PUBLIC_APP_NAME || "Saasany"} <noreply@${process.env.NEXT_PUBLIC_APP_DOMAIN || "saasany.com"}>`,
+  support: "support@yourdomain.com",
+},
+```
+
+## Adding a New Email
+
+1. Create a template in `src/components/emails/my-email.tsx`:
+
+```typescript
+export function myEmailHtml({ name }: { name: string }): string {
+  return `<div><h1>Hello ${name}</h1><p>Your content here.</p></div>`;
+}
+```
+
+2. Add a send function in `src/lib/email.ts`:
+
+```typescript
+import { myEmailHtml } from "@/components/emails/my-email";
+
+export async function sendMyEmail(to: string, name: string): Promise<EmailResult> {
+  try {
+    const { data, error } = await resend.emails.send({
+      from: FROM,
+      to,
+      subject: "Your Subject Line",
+      html: myEmailHtml({ name }),
+    });
+
+    if (error) return { success: false, error: error.message };
+    return { success: true, id: data?.id };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+    return { success: false, error: message };
+  }
+}
+```
+
+3. Call it from your API route or server action where needed.
+
+## Testing Locally
+
+During development, Resend allows sending to your verified email address without domain verification. Use a test API key and check the Resend dashboard for delivery logs.

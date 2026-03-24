@@ -26,7 +26,7 @@ export function Header() {
     { href: "/#features", label: t("features") },
     { href: "/#pricing", label: t("pricing") },
     { href: "/blog", label: t("blog") },
-    { href: siteConfig.links.github, label: t("docs"), external: true },
+    { href: "/docs", label: t("docs") },
   ];
 
   return (

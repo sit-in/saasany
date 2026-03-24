@@ -1,0 +1,169 @@
+---
+title: "认证"
+description: "使用 Better Auth 实现邮箱密码登录和 GitHub OAuth，管理用户会话"
+order: 4
+---
+
+## 认证方案
+
+Saasany 使用 [Better Auth](https://www.better-auth.com/) 作为认证方案，支持：
+
+- 邮箱 + 密码注册登录
+- GitHub OAuth 社交登录
+- 管理员角色和权限控制
+
+## 核心配置
+
+认证配置在 `src/lib/auth.ts` 中：
+
+```typescript
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { admin } from "better-auth/plugins";
+import { db } from "@/lib/db";
+import * as schema from "@/lib/db/schema";
+
+export const auth = betterAuth({
+  database: drizzleAdapter(db, {
+    provider: "pg",
+    schema: {
+      user: schema.user,
+      session: schema.session,
+      account: schema.account,
+      verification: schema.verification,
+    },
+    usePlural: false,
+  }),
+  emailAndPassword: { enabled: true },
+  socialProviders: {
+    github: {
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+    },
+  },
+  plugins: [admin()],
+});
+```
+
+## 服务端获取 Session
+
+在 Server Component 或 API Route 中获取当前用户：
+
+```typescript
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+
+// 在服务端组件中
+const session = await auth.api.getSession({
+  headers: await headers(),
+});
+
+if (!session) {
+  // 用户未登录，重定向或返回错误
+  redirect("/login");
+}
+
+// 使用用户信息
+const userName = session.user.name;
+const userEmail = session.user.email;
+```
+
+## 客户端获取 Session
+
+在客户端组件中使用 `useSession` hook：
+
+```typescript
+"use client";
+
+import { useSession, signIn, signOut } from "@/lib/auth-client";
+
+export function UserMenu() {
+  const { data: session, isPending } = useSession();
+
+  if (isPending) return <div>Loading...</div>;
+
+  if (!session) {
+    return <button onClick={() => signIn.email({ email, password })}>登录</button>;
+  }
+
+  return (
+    <div>
+      <p>你好，{session.user.name}</p>
+      <button onClick={() => signOut()}>退出登录</button>
+    </div>
+  );
+}
+```
+
+> 注意：`useSession` 是 React hook，只能在 `"use client"` 组件中使用。
+
+## 配置 GitHub OAuth
+
+### 第一步：创建 GitHub OAuth App
+
+1. 打开 [GitHub Developer Settings](https://github.com/settings/developers)
+2. 点击 **New OAuth App**
+3. 填写信息：
+   - **Homepage URL**: `http://localhost:3000`
+   - **Authorization callback URL**: `http://localhost:3000/api/auth/callback/github`
+
+### 第二步：添加环境变量
+
+```env
+GITHUB_CLIENT_ID=你的Client_ID
+GITHUB_CLIENT_SECRET=你的Client_Secret
+```
+
+GitHub OAuth 是可选的——如果不配置这两个环境变量，认证系统会自动跳过社交登录，只保留邮箱密码方式。
+
+## 保护页面和 API
+
+### 保护 Dashboard 页面
+
+Dashboard 的 layout 已经内置了 session 检查：
+
+```typescript
+// src/app/[locale]/(dashboard)/layout.tsx
+const session = await auth.api.getSession({
+  headers: await headers(),
+});
+
+if (!session) {
+  redirect("/login");
+}
+```
+
+所有放在 `(dashboard)` 路由组下的页面都会自动受保护。
+
+### 保护 API 路由
+
+```typescript
+// src/app/api/your-route/route.ts
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { NextResponse } from "next/server";
+
+export async function GET() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // 处理已认证的请求
+  return NextResponse.json({ userId: session.user.id });
+}
+```
+
+## 用户数据模型
+
+Better Auth 管理的数据库表定义在 `src/lib/db/schema.ts`：
+
+| 表 | 说明 |
+|------|------|
+| `user` | 用户基本信息（name, email, role） |
+| `session` | 登录会话 |
+| `account` | OAuth 账号关联 |
+| `verification` | 邮箱验证令牌 |

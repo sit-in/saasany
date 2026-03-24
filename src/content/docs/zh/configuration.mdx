@@ -1,0 +1,124 @@
+---
+title: "配置"
+description: "自定义站点名称、品牌信息、邮箱地址和社交链接"
+order: 2
+---
+
+## 站点配置
+
+所有核心配置集中在 `src/config/site.ts` 文件中。修改这个文件就能一次性更新整个站点的品牌信息。
+
+```typescript
+// src/config/site.ts
+export const siteConfig = {
+  name: "Saasany",
+  url: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+  description: "Build your AI SaaS product in a weekend",
+  email: {
+    from: process.env.RESEND_FROM_EMAIL ?? "Saasany <noreply@saasany.com>",
+    support: "support@saasany.com",
+    privacy: "privacy@saasany.com",
+    legal: "legal@saasany.com",
+  },
+  links: {
+    github: "https://github.com/your-org/your-repo",
+    twitter: "",
+    discord: "",
+  },
+  creator: "Saasany",
+  keywords: ["AI", "SaaS", "Next.js"],
+};
+```
+
+## 修改品牌名称
+
+把 `name` 和 `creator` 改成你的产品名。这会影响：
+
+- 页面标题和 SEO 元信息
+- 邮件模板中的发件人名称
+- 页脚的版权信息
+
+```typescript
+name: "你的产品名",
+creator: "你的公司名",
+```
+
+## 配置邮箱地址
+
+邮箱配置支持通过环境变量覆盖，推荐在 `.env.local` 中设置：
+
+```env
+NEXT_PUBLIC_APP_DOMAIN=yourdomain.com
+RESEND_FROM_EMAIL=YourApp <noreply@yourdomain.com>
+```
+
+`siteConfig.email` 中定义了四种邮箱地址：
+
+| 字段 | 用途 |
+|------|------|
+| `from` | 发送系统邮件的发件人地址 |
+| `support` | 用户支持联系邮箱 |
+| `privacy` | 隐私政策联系邮箱 |
+| `legal` | 法律事务联系邮箱 |
+
+## 社交链接
+
+在 `links` 对象中填入你的社交账号链接。留空的链接不会在页面上显示：
+
+```typescript
+links: {
+  github: "https://github.com/your-org",
+  twitter: "https://twitter.com/yourhandle",
+  discord: "https://discord.gg/your-invite",
+},
+```
+
+这些链接会出现在网站页脚组件 `src/components/layout/footer.tsx` 中。
+
+## SEO 关键词
+
+`keywords` 数组用于生成页面的 meta keywords 标签：
+
+```typescript
+keywords: [
+  "AI工具",
+  "SaaS模板",
+  "你的核心关键词",
+],
+```
+
+## 定价方案配置
+
+同一个文件中还定义了定价方案：
+
+```typescript
+export const pricingPlans = [
+  {
+    id: "free",
+    name: "Free",
+    description: "Get started for free",
+    price: { monthly: 0, yearly: 0 },
+    stripePriceId: { monthly: "", yearly: "" },
+    features: ["5 AI generations per day", "Basic dashboard"],
+    popular: false,
+  },
+  {
+    id: "pro",
+    name: "Pro",
+    description: "For serious builders",
+    price: { monthly: 29, yearly: 290 },
+    stripePriceId: {
+      monthly: process.env.STRIPE_PRO_MONTHLY_PRICE_ID || "",
+      yearly: process.env.STRIPE_PRO_YEARLY_PRICE_ID || "",
+    },
+    features: ["Unlimited AI generations", "Priority support", "API access"],
+    popular: true,
+  },
+];
+```
+
+> `popular: true` 的方案会在定价页面突出展示。`stripePriceId` 需要从 Stripe Dashboard 获取。
+
+## 环境变量清单
+
+所有环境变量参考 `.env.example`，部署时需在 Vercel 控制台逐一配置。

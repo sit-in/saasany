@@ -1,0 +1,157 @@
+---
+title: "数据库"
+description: "使用 Drizzle ORM 操作 Neon PostgreSQL，管理数据模型和迁移"
+order: 5
+---
+
+## 技术选型
+
+Saasany 使用 **Drizzle ORM** + **Neon PostgreSQL** 的组合：
+
+- **Drizzle ORM** — 类型安全的 TypeScript ORM，API 设计贴近 SQL
+- **Neon** — Serverless PostgreSQL，冷启动快，免费额度慷慨，适合 SaaS 场景
+
+## 数据库连接
+
+连接配置在 `src/lib/db/index.ts`，使用 Neon 的 HTTP 驱动：
+
+```typescript
+import { neon } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/neon-http";
+
+const sql = neon(process.env.DATABASE_URL!);
+export const db = drizzle(sql);
+```
+
+> 重要：Neon HTTP 驱动不支持事务（`db.transaction()`），这是 Serverless 架构的限制。需要事务时应拆分为多个独立操作。
+
+## 数据模型
+
+所有表定义在 `src/lib/db/schema.ts`：
+
+### 认证相关表（Better Auth 管理）
+
+```typescript
+export const user = pgTable("user", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull().unique(),
+  emailVerified: boolean("email_verified").notNull().default(false),
+  image: text("image"),
+  role: text("role").default("user"),
+  banned: boolean("banned").default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+```
+
+### 业务表
+
+```typescript
+// 订阅信息
+export const subscription = pgTable("subscription", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  stripeCustomerId: text("stripe_customer_id").unique(),
+  stripeSubscriptionId: text("stripe_subscription_id").unique(),
+  status: text("status").notNull().default("inactive"),
+  plan: text("plan").default("free"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// API 密钥
+export const apiKey = pgTable("api_key", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  key: text("key").notNull().unique(),
+  lastUsedAt: timestamp("last_used_at"),
+  expiresAt: timestamp("expires_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// 额度余额
+export const creditBalance = pgTable("credit_balance", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  balance: integer("balance").notNull().default(0),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+```
+
+## 常用查询示例
+
+```typescript
+import { db } from "@/lib/db";
+import { user, subscription } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
+
+// 查询用户
+const result = await db.select().from(user).where(eq(user.id, userId));
+
+// 查询用户的订阅
+const sub = await db
+  .select()
+  .from(subscription)
+  .where(eq(subscription.userId, userId));
+
+// 插入记录
+await db.insert(subscription).values({
+  id: crypto.randomUUID(),
+  userId,
+  status: "active",
+  plan: "pro",
+});
+
+// 更新记录
+await db
+  .update(subscription)
+  .set({ status: "canceled" })
+  .where(eq(subscription.userId, userId));
+```
+
+## 数据库迁移
+
+### 开发阶段：直接推送
+
+```bash
+npx drizzle-kit push
+```
+
+这会直接将 schema 变更同步到数据库，适合快速迭代。
+
+### 生产环境：生成迁移文件
+
+```bash
+# 生成迁移 SQL 文件
+npx drizzle-kit generate
+
+# 查看迁移内容确认无误后执行
+npx drizzle-kit migrate
+```
+
+## 添加新表
+
+1. 在 `src/lib/db/schema.ts` 中定义新表
+2. 运行 `npx drizzle-kit push` 同步到数据库
+3. 在业务代码中导入使用
+
+```typescript
+// 示例：添加一个反馈表
+export const feedback = pgTable("feedback", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").references(() => user.id),
+  message: text("message").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+```
+
+## Drizzle Studio
+
+用 Drizzle Studio 可视化查看和编辑数据库：
+
+```bash
+npx drizzle-kit studio
+```
+
+浏览器打开 `https://local.drizzle.studio` 即可操作数据。

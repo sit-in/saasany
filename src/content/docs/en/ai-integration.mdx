@@ -1,0 +1,157 @@
+---
+title: "AI Integration"
+description: "Vercel AI SDK with OpenAI — streaming chat, text generation, model switching, and custom system prompts."
+order: 9
+---
+
+## Overview
+
+Saasany uses the [Vercel AI SDK](https://ai-sdk.dev/) with OpenAI for AI features. Two endpoints are included: streaming chat and one-shot text generation. The AI model configuration lives in `src/lib/ai.ts`.
+
+## Model Configuration
+
+```typescript
+// src/lib/ai.ts
+import { openai } from "@ai-sdk/openai";
+
+const modelName = process.env.AI_MODEL ?? "gpt-4o-mini";
+export const aiModel = openai(modelName);
+
+export const systemPrompt =
+  process.env.AI_SYSTEM_PROMPT ??
+  "You are a helpful assistant. Be concise and clear in your responses.";
+```
+
+Override the defaults via environment variables:
+
+```bash
+AI_MODEL=gpt-4o                          # Use a different model
+AI_SYSTEM_PROMPT=You are a coding expert. # Custom system prompt
+```
+
+## Streaming Chat
+
+The chat endpoint at `src/app/api/ai/chat/route.ts` returns a streaming response:
+
+```typescript
+import { auth } from "@/lib/auth";
+import { aiModel, systemPrompt } from "@/lib/ai";
+import { streamText, convertToModelMessages, type UIMessage } from "ai";
+
+export async function POST(req: Request) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  const { messages } = await req.json();
+
+  const result = streamText({
+    model: aiModel,
+    system: systemPrompt,
+    messages: await convertToModelMessages(messages),
+  });
+
+  return result.toUIMessageStreamResponse();
+}
+```
+
+### Client-Side Chat Component
+
+Use the `useChat` hook from `@ai-sdk/react`:
+
+```typescript
+"use client";
+import { useChat } from "@ai-sdk/react";
+
+export function ChatInterface() {
+  const { messages, input, handleInputChange, handleSubmit, isLoading } =
+    useChat({ api: "/api/ai/chat" });
+
+  return (
+    <form onSubmit={handleSubmit}>
+      {messages.map((m) => (
+        <div key={m.id}>
+          <strong>{m.role}:</strong> {m.content}
+        </div>
+      ))}
+      <input value={input} onChange={handleInputChange} />
+      <button type="submit" disabled={isLoading}>Send</button>
+    </form>
+  );
+}
+```
+
+## Text Generation
+
+The generation endpoint at `src/app/api/ai/generate/route.ts` returns a complete response (non-streaming):
+
+```typescript
+import { generateText } from "ai";
+
+const result = await generateText({
+  model: aiModel,
+  system: systemPrompt,
+  prompt,
+});
+
+return Response.json({ text: result.text });
+```
+
+### Calling from the Client
+
+```typescript
+const response = await fetch("/api/ai/generate", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ prompt: "Explain serverless computing in 2 sentences" }),
+});
+
+const { text } = await response.json();
+```
+
+## Switching AI Providers
+
+The Vercel AI SDK supports many providers. To switch from OpenAI to another provider:
+
+### Anthropic
+
+```bash
+npm install @ai-sdk/anthropic
+```
+
+```typescript
+// src/lib/ai.ts
+import { anthropic } from "@ai-sdk/anthropic";
+
+export const aiModel = anthropic("claude-sonnet-4-20250514");
+```
+
+### Google Gemini
+
+```bash
+npm install @ai-sdk/google
+```
+
+```typescript
+import { google } from "@ai-sdk/google";
+
+export const aiModel = google("gemini-2.0-flash");
+```
+
+The API routes remain unchanged — only `src/lib/ai.ts` needs updating.
+
+## Authentication
+
+Both AI routes require a valid session. Unauthenticated requests receive a `401 Unauthorized` response. The session check runs on every request:
+
+```typescript
+const session = await auth.api.getSession({ headers: await headers() });
+if (!session) {
+  return new Response("Unauthorized", { status: 401 });
+}
+```
+
+## Rate Limiting and Credits
+
+The `creditBalance` table tracks per-user usage. You can implement rate limiting by checking the balance before processing AI requests and decrementing after each successful call.

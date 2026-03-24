@@ -1,0 +1,212 @@
+---
+title: "AI 集成"
+description: "使用 Vercel AI SDK 实现流式对话、文本生成，支持切换不同 AI 模型"
+order: 9
+---
+
+## AI 技术栈
+
+Saasany 的 AI 功能基于以下技术：
+
+- **Vercel AI SDK** — 统一的 AI 接口，支持流式响应
+- **OpenAI** — 默认使用 GPT-4o-mini 模型
+- 完全兼容其他 OpenAI 接口的服务（如 DeepSeek、Moonshot 等）
+
+## AI 配置
+
+AI 模型配置在 `src/lib/ai.ts`：
+
+```typescript
+import { openai } from "@ai-sdk/openai";
+
+const modelName = process.env.AI_MODEL ?? "gpt-4o-mini";
+
+export const aiModel = openai(modelName);
+
+export const systemPrompt =
+  process.env.AI_SYSTEM_PROMPT ??
+  "You are a helpful assistant. Be concise and clear in your responses.";
+```
+
+### 环境变量
+
+```env
+# 必填
+OPENAI_API_KEY=sk-xxx
+
+# 可选：覆盖默认模型
+AI_MODEL=gpt-4o-mini
+
+# 可选：自定义系统提示词
+AI_SYSTEM_PROMPT=你是一个专业的 AI 助手。
+```
+
+## 流式对话 API
+
+流式对话的 API 路由示例：
+
+```typescript
+// src/app/api/ai/chat/route.ts
+import { streamText } from "ai";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { aiModel, systemPrompt } from "@/lib/ai";
+
+export async function POST(req: Request) {
+  // 认证检查
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  const { messages } = await req.json();
+
+  const result = streamText({
+    model: aiModel,
+    system: systemPrompt,
+    messages,
+  });
+
+  return result.toDataStreamResponse();
+}
+```
+
+## 客户端对话组件
+
+使用 Vercel AI SDK 的 `useChat` hook 构建对话界面：
+
+```typescript
+"use client";
+
+import { useChat } from "@ai-sdk/react";
+
+export function ChatUI() {
+  const { messages, input, handleInputChange, handleSubmit, isLoading } =
+    useChat({
+      api: "/api/ai/chat",
+    });
+
+  return (
+    <div>
+      {messages.map((m) => (
+        <div key={m.id} className={m.role === "user" ? "text-right" : ""}>
+          <p className="text-sm text-muted-foreground">{m.role}</p>
+          <p>{m.content}</p>
+        </div>
+      ))}
+
+      <form onSubmit={handleSubmit}>
+        <input
+          value={input}
+          onChange={handleInputChange}
+          placeholder="输入消息..."
+          disabled={isLoading}
+        />
+        <button type="submit" disabled={isLoading}>
+          发送
+        </button>
+      </form>
+    </div>
+  );
+}
+```
+
+## 文本生成（非对话场景）
+
+对于一次性文本生成（不是多轮对话），使用 `generateText`：
+
+```typescript
+import { generateText } from "ai";
+import { aiModel } from "@/lib/ai";
+
+const { text } = await generateText({
+  model: aiModel,
+  prompt: "用一段话概括这篇文章的核心观点：" + articleContent,
+});
+```
+
+## 切换 AI 模型
+
+### 使用其他 OpenAI 模型
+
+直接修改环境变量即可：
+
+```env
+AI_MODEL=gpt-4o
+# 或
+AI_MODEL=gpt-4-turbo
+```
+
+### 使用兼容 OpenAI 接口的服务
+
+许多国内 AI 服务都兼容 OpenAI 的 API 格式。以 DeepSeek 为例：
+
+```env
+OPENAI_API_KEY=your-deepseek-key
+OPENAI_BASE_URL=https://api.deepseek.com/v1
+AI_MODEL=deepseek-chat
+```
+
+### 使用其他 AI 提供商
+
+Vercel AI SDK 支持多种提供商，只需安装对应的 SDK：
+
+```bash
+# Anthropic Claude
+npm install @ai-sdk/anthropic
+
+# Google Gemini
+npm install @ai-sdk/google
+```
+
+然后修改 `src/lib/ai.ts`：
+
+```typescript
+// 切换到 Anthropic Claude
+import { anthropic } from "@ai-sdk/anthropic";
+export const aiModel = anthropic("claude-sonnet-4-20250514");
+
+// 切换到 Google Gemini
+import { google } from "@ai-sdk/google";
+export const aiModel = google("gemini-pro");
+```
+
+## API 密钥管理
+
+Saasany 内置了 API 密钥管理功能，用户可以生成 API 密钥来调用 AI 接口：
+
+```typescript
+import { db } from "@/lib/db";
+import { apiKey } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
+
+// 验证 API 密钥
+const key = await db
+  .select()
+  .from(apiKey)
+  .where(eq(apiKey.key, requestApiKey));
+
+if (!key.length) {
+  return new Response("Invalid API key", { status: 401 });
+}
+```
+
+## 额度控制
+
+免费用户有每日 AI 生成次数限制，通过 `creditBalance` 表管理：
+
+```typescript
+import { creditBalance } from "@/lib/db/schema";
+
+// 检查余额
+const balance = await db
+  .select()
+  .from(creditBalance)
+  .where(eq(creditBalance.userId, userId));
+
+if (balance[0]?.balance <= 0) {
+  return new Response("Insufficient credits", { status: 403 });
+}
+```

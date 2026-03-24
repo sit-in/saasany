@@ -1,0 +1,205 @@
+---
+title: "邮件"
+description: "使用 Resend 发送事务邮件，自定义邮件模板，配置发件人信息"
+order: 10
+---
+
+## 邮件服务
+
+Saasany 使用 [Resend](https://resend.com) 发送事务邮件。Resend 提供：
+
+- 免费额度每月 3000 封
+- 超高送达率
+- 简洁的 API 和 SDK
+- 实时发送日志
+
+## 环境变量配置
+
+```env
+# 从 Resend Dashboard 获取
+RESEND_API_KEY=re_xxx
+
+# 发件人地址（需要在 Resend 验证域名）
+RESEND_FROM_EMAIL=YourApp <noreply@yourdomain.com>
+```
+
+> 在 Resend 中验证你的域名后才能使用自定义发件人地址。未验证前可以使用 `onboarding@resend.dev` 测试。
+
+## 邮件发送函数
+
+邮件发送逻辑封装在 `src/lib/email.ts` 中：
+
+```typescript
+import { Resend } from "resend";
+import { siteConfig } from "@/config/site";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+const FROM = siteConfig.email.from;
+
+export interface EmailResult {
+  success: boolean;
+  id?: string;
+  error?: string;
+}
+```
+
+### 发送欢迎邮件
+
+用户注册成功后自动发送：
+
+```typescript
+import { sendWelcomeEmail } from "@/lib/email";
+
+await sendWelcomeEmail(user.email, user.name);
+```
+
+函数实现：
+
+```typescript
+export async function sendWelcomeEmail(
+  to: string,
+  name: string
+): Promise<EmailResult> {
+  try {
+    const { data, error } = await resend.emails.send({
+      from: FROM,
+      to,
+      subject: `Welcome to Saasany, ${name}!`,
+      html: welcomeEmailHtml({ name }),
+    });
+
+    if (error) {
+      return { success: false, error: error.message };
+    }
+    return { success: true, id: data?.id };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+    return { success: false, error: message };
+  }
+}
+```
+
+### 发送订阅确认邮件
+
+用户完成付费订阅后发送：
+
+```typescript
+import { sendSubscriptionEmail } from "@/lib/email";
+
+await sendSubscriptionEmail(
+  user.email,
+  user.name,
+  "Pro",            // 订阅方案名称
+  "2026-04-24"      // 续费日期（可选）
+);
+```
+
+## 邮件模板
+
+邮件模板位于 `src/components/emails/` 目录：
+
+| 文件 | 用途 |
+|------|------|
+| `welcome-email.tsx` | 欢迎邮件模板 |
+| `subscription-email.tsx` | 订阅确认邮件模板 |
+
+模板导出一个返回 HTML 字符串的函数：
+
+```typescript
+// src/components/emails/welcome-email.tsx
+interface WelcomeEmailProps {
+  name: string;
+}
+
+export function welcomeEmailHtml({ name }: WelcomeEmailProps): string {
+  return `
+    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+      <h1>欢迎加入，${name}！</h1>
+      <p>感谢你注册我们的服务。</p>
+      <a href="${siteConfig.url}/dashboard"
+         style="background: #0D9276; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px;">
+        进入控制台
+      </a>
+    </div>
+  `;
+}
+```
+
+## 添加新的邮件类型
+
+### 第一步：创建模板
+
+在 `src/components/emails/` 中新建模板文件：
+
+```typescript
+// src/components/emails/reset-password-email.tsx
+interface ResetPasswordEmailProps {
+  name: string;
+  resetUrl: string;
+}
+
+export function resetPasswordEmailHtml({
+  name,
+  resetUrl,
+}: ResetPasswordEmailProps): string {
+  return `
+    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+      <h1>重置密码</h1>
+      <p>${name}，你好！</p>
+      <p>点击下方按钮重置你的密码：</p>
+      <a href="${resetUrl}"
+         style="background: #0D9276; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px;">
+        重置密码
+      </a>
+      <p style="color: #666; font-size: 14px; margin-top: 20px;">
+        如果不是你本人操作，请忽略这封邮件。
+      </p>
+    </div>
+  `;
+}
+```
+
+### 第二步：添加发送函数
+
+在 `src/lib/email.ts` 中添加：
+
+```typescript
+import { resetPasswordEmailHtml } from "@/components/emails/reset-password-email";
+
+export async function sendResetPasswordEmail(
+  to: string,
+  name: string,
+  resetUrl: string
+): Promise<EmailResult> {
+  try {
+    const { data, error } = await resend.emails.send({
+      from: FROM,
+      to,
+      subject: "重置你的密码",
+      html: resetPasswordEmailHtml({ name, resetUrl }),
+    });
+
+    if (error) {
+      return { success: false, error: error.message };
+    }
+    return { success: true, id: data?.id };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+    return { success: false, error: message };
+  }
+}
+```
+
+### 第三步：在业务逻辑中调用
+
+```typescript
+await sendResetPasswordEmail(
+  user.email,
+  user.name,
+  `${siteConfig.url}/reset-password?token=${token}`
+);
+```
+
+## 调试邮件
+
+在 [Resend Dashboard](https://resend.com/emails) 可以查看所有已发送邮件的状态、打开率和送达情况。开发阶段建议用自己的邮箱测试。

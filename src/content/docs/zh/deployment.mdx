@@ -1,0 +1,123 @@
+---
+title: "部署"
+description: "将 Saasany 部署到 Vercel，配置环境变量、Stripe Webhook 和自定义域名"
+order: 3
+---
+
+## 部署到 Vercel
+
+Saasany 基于 Next.js 构建，Vercel 是最佳的部署平台。
+
+### 方式一：通过 GitHub 集成
+
+1. 将代码推送到 GitHub 仓库
+2. 打开 [vercel.com](https://vercel.com)，点击 **New Project**
+3. 导入你的 GitHub 仓库
+4. 在部署设置中添加环境变量（见下方清单）
+5. 点击 **Deploy**
+
+### 方式二：通过 CLI
+
+```bash
+npm i -g vercel
+vercel
+```
+
+首次部署后，通过 Vercel 控制台添加环境变量，然后重新部署：
+
+```bash
+vercel --prod
+```
+
+## 必须配置的环境变量
+
+在 Vercel 项目的 **Settings > Environment Variables** 中添加以下变量：
+
+```env
+# 应用
+NEXT_PUBLIC_APP_URL=https://yourdomain.com
+NEXT_PUBLIC_APP_DOMAIN=yourdomain.com
+
+# 数据库
+DATABASE_URL=postgresql://user:password@host/database?sslmode=require
+
+# 认证
+BETTER_AUTH_SECRET=your-production-secret-key
+BETTER_AUTH_URL=https://yourdomain.com
+NEXT_PUBLIC_BETTER_AUTH_URL=https://yourdomain.com
+
+# Stripe
+STRIPE_SECRET_KEY=sk_live_xxx
+STRIPE_WEBHOOK_SECRET=whsec_xxx
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_xxx
+STRIPE_PRO_MONTHLY_PRICE_ID=price_xxx
+STRIPE_PRO_YEARLY_PRICE_ID=price_xxx
+
+# AI
+OPENAI_API_KEY=sk-xxx
+
+# 邮件
+RESEND_API_KEY=re_xxx
+RESEND_FROM_EMAIL=YourApp <noreply@yourdomain.com>
+```
+
+> 注意：`BETTER_AUTH_SECRET` 在生产环境必须使用强随机字符串，不要用开发时的测试值。
+
+## 配置 Stripe Webhook
+
+Stripe 需要一个 Webhook 端点来通知支付事件。
+
+### 第一步：在 Stripe Dashboard 创建 Webhook
+
+1. 打开 [Stripe Webhook 设置](https://dashboard.stripe.com/webhooks)
+2. 点击 **Add endpoint**
+3. 输入 URL：`https://yourdomain.com/api/stripe/webhook`
+4. 选择要监听的事件：
+   - `checkout.session.completed`
+   - `customer.subscription.updated`
+   - `customer.subscription.deleted`
+   - `invoice.payment_succeeded`
+
+### 第二步：获取 Webhook Secret
+
+创建完成后，点击 Webhook 端点，复制 **Signing secret**（以 `whsec_` 开头），填入 Vercel 的 `STRIPE_WEBHOOK_SECRET` 环境变量。
+
+### 第三步：验证 Webhook
+
+```bash
+# 使用 Stripe CLI 本地测试
+stripe listen --forward-to localhost:3000/api/stripe/webhook
+```
+
+## 自定义域名
+
+### 在 Vercel 添加域名
+
+1. 进入项目 **Settings > Domains**
+2. 输入你的域名，点击 **Add**
+3. 按提示配置 DNS 记录（CNAME 或 A 记录）
+
+### 更新环境变量
+
+域名生效后，更新以下变量：
+
+```env
+NEXT_PUBLIC_APP_URL=https://yourdomain.com
+BETTER_AUTH_URL=https://yourdomain.com
+NEXT_PUBLIC_BETTER_AUTH_URL=https://yourdomain.com
+```
+
+## 部署检查清单
+
+部署完成后逐项验证：
+
+- [ ] 首页正常加载，无控制台报错
+- [ ] 注册/登录功能正常
+- [ ] Stripe 支付流程可以走通（使用测试卡 `4242 4242 4242 4242`）
+- [ ] AI 对话功能正常返回
+- [ ] 邮件发送成功（检查 Resend Dashboard）
+- [ ] 中英文切换正常
+
+## 持续部署
+
+连接 GitHub 后，每次推送到 `main` 分支都会自动触发部署。PR 会自动生成预览链接。

@@ -1,0 +1,99 @@
+---
+title: "Configuration"
+description: "Customize your site name, branding, email addresses, social links, and pricing plans."
+order: 2
+---
+
+## Site Configuration
+
+All site-wide settings live in `src/config/site.ts`. This is the single source of truth for your brand identity.
+
+```typescript
+// src/config/site.ts
+export const siteConfig = {
+  name: "Saasany",
+  url: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+  description: "Build your AI SaaS product in a weekend",
+  email: {
+    from: process.env.RESEND_FROM_EMAIL ?? "Saasany <noreply@saasany.com>",
+    support: "support@saasany.com",
+    privacy: "privacy@saasany.com",
+    legal: "legal@saasany.com",
+  },
+  links: {
+    github: "https://github.com/sit-in/saasany",
+    twitter: "",
+    discord: "",
+  },
+  creator: "Saasany",
+  keywords: ["AI", "SaaS", "Next.js", "Template"],
+};
+```
+
+### Changing Your Brand Name
+
+1. Update `name`, `creator`, and `description` in `siteConfig`
+2. Set the `NEXT_PUBLIC_APP_DOMAIN` env var to your domain
+3. Update the email addresses to match your domain
+4. Update the social `links` with your actual URLs
+
+### Email Addresses
+
+The `email.from` field is used as the sender for all transactional emails (welcome, subscription confirmation). It defaults to the `RESEND_FROM_EMAIL` environment variable, falling back to `{APP_NAME} <noreply@{APP_DOMAIN}>`.
+
+## Pricing Plans
+
+Pricing plans are also defined in `src/config/site.ts`:
+
+```typescript
+export const pricingPlans = [
+  {
+    id: "free",
+    name: "Free",
+    description: "Get started for free",
+    price: { monthly: 0, yearly: 0 },
+    stripePriceId: { monthly: "", yearly: "" },
+    features: ["5 AI generations per day", "Basic dashboard", "Community support"],
+    popular: false,
+  },
+  {
+    id: "pro",
+    name: "Pro",
+    description: "For serious builders",
+    price: { monthly: 29, yearly: 290 },
+    stripePriceId: {
+      monthly: process.env.STRIPE_PRO_MONTHLY_PRICE_ID || "",
+      yearly: process.env.STRIPE_PRO_YEARLY_PRICE_ID || "",
+    },
+    features: [
+      "Unlimited AI generations",
+      "Advanced dashboard",
+      "Priority support",
+      "API access",
+      "Custom branding",
+    ],
+    popular: true,
+  },
+];
+```
+
+### Adding a New Plan
+
+1. Create the product and price in your Stripe dashboard
+2. Copy the price IDs (monthly and yearly)
+3. Add the new plan object to the `pricingPlans` array
+4. Add the price ID env vars to `.env.local` and your deployment platform
+
+## AI Model Configuration
+
+The default AI model is configured in `src/lib/ai.ts` and can be overridden via environment variables:
+
+```bash
+# .env.local
+AI_MODEL=gpt-4o-mini                    # Default model
+AI_SYSTEM_PROMPT=You are a helpful AI.   # Custom system prompt
+```
+
+## Environment Variables
+
+Always keep `.env.example` up to date when adding new variables. Never commit `.env.local` to version control — it is already in `.gitignore`.

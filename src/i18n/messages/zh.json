@@ -265,6 +265,26 @@
     "previous": "上一页",
     "next": "下一页"
   },
+  "docs": {
+    "menu": "目录",
+    "nav": {
+      "guide": "使用指南",
+      "core": "核心",
+      "extensions": "扩展"
+    },
+    "titles": {
+      "getting-started": "快速开始",
+      "configuration": "配置",
+      "deployment": "部署",
+      "authentication": "认证",
+      "database": "数据库",
+      "i18n": "国际化",
+      "themes": "主题",
+      "payments": "支付",
+      "ai-integration": "AI 集成",
+      "email": "邮件"
+    }
+  },
   "common": {
     "loading": "加载中...",
     "error": "出现错误，请重试。",

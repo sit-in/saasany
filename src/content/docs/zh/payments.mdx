@@ -1,0 +1,150 @@
+---
+title: "支付"
+description: "集成 Stripe 实现订阅支付、Webhook 处理和定价方案管理"
+order: 8
+---
+
+## Stripe 集成概览
+
+Saasany 集成了完整的 Stripe 订阅支付流程：
+
+- **Stripe Checkout** — 托管的支付页面，无需自建表单
+- **Stripe Webhook** — 实时接收支付事件通知
+- **Stripe Customer Portal** — 用户自助管理订阅（升降级、取消、更新支付方式）
+
+## 环境变量配置
+
+```env
+# Stripe 密钥（从 Stripe Dashboard 获取）
+STRIPE_SECRET_KEY=sk_test_xxx
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_xxx
+
+# Webhook 签名密钥
+STRIPE_WEBHOOK_SECRET=whsec_xxx
+
+# 定价 ID（从 Stripe Products 页面获取）
+STRIPE_PRO_MONTHLY_PRICE_ID=price_xxx
+STRIPE_PRO_YEARLY_PRICE_ID=price_xxx
+```
+
+> 开发阶段使用 `sk_test_` 开头的测试密钥，上线后切换到 `sk_live_`。
+
+## 定价方案配置
+
+定价方案在 `src/config/site.ts` 的 `pricingPlans` 数组中定义：
+
+```typescript
+export const pricingPlans = [
+  {
+    id: "free",
+    name: "Free",
+    description: "Get started for free",
+    price: { monthly: 0, yearly: 0 },
+    stripePriceId: { monthly: "", yearly: "" },
+    features: ["5 AI generations per day", "Basic dashboard"],
+    popular: false,
+  },
+  {
+    id: "pro",
+    name: "Pro",
+    description: "For serious builders",
+    price: { monthly: 29, yearly: 290 },
+    stripePriceId: {
+      monthly: process.env.STRIPE_PRO_MONTHLY_PRICE_ID || "",
+      yearly: process.env.STRIPE_PRO_YEARLY_PRICE_ID || "",
+    },
+    features: [
+      "Unlimited AI generations",
+      "Priority support",
+      "API access",
+      "Custom branding",
+    ],
+    popular: true,
+  },
+];
+```
+
+### 在 Stripe 创建对应产品
+
+1. 打开 [Stripe Products](https://dashboard.stripe.com/products)
+2. 创建产品，添加月付和年付两个价格
+3. 复制每个价格的 Price ID（以 `price_` 开头）
+4. 填入环境变量
+
+## 结账流程
+
+用户点击「升级」按钮后的完整流程：
+
+1. 前端调用 API 创建 Checkout Session
+2. 用户被重定向到 Stripe 托管的支付页面
+3. 支付成功后重定向回应用
+4. Stripe 通过 Webhook 通知后端
+5. 后端更新数据库中的订阅状态
+
+```typescript
+// 前端发起结账
+const response = await fetch("/api/stripe/checkout", {
+  method: "POST",
+  body: JSON.stringify({
+    priceId: "price_xxx",
+    plan: "pro",
+  }),
+});
+const { url } = await response.json();
+window.location.href = url; // 重定向到 Stripe
+```
+
+## Webhook 处理
+
+Webhook 路由在 `src/app/api/stripe/webhook/route.ts`，处理以下事件：
+
+| 事件 | 处理逻辑 |
+|------|---------|
+| `checkout.session.completed` | 创建/更新订阅记录 |
+| `customer.subscription.updated` | 同步订阅状态变更 |
+| `customer.subscription.deleted` | 标记订阅为已取消 |
+| `invoice.payment_succeeded` | 更新订阅周期 |
+
+> 注意：Webhook 路由**不需要**用户认证（没有 session），它通过 Stripe 签名来验证请求真实性。
+
+## 本地测试 Webhook
+
+```bash
+# 安装 Stripe CLI
+brew install stripe/stripe-cli/stripe
+
+# 登录
+stripe login
+
+# 转发 Webhook 到本地
+stripe listen --forward-to localhost:3000/api/stripe/webhook
+
+# 在另一个终端触发测试事件
+stripe trigger checkout.session.completed
+```
+
+## 查询用户订阅状态
+
+```typescript
+import { db } from "@/lib/db";
+import { subscription } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
+
+const sub = await db
+  .select()
+  .from(subscription)
+  .where(eq(subscription.userId, userId));
+
+const isActive = sub[0]?.status === "active";
+const plan = sub[0]?.plan ?? "free";
+```
+
+## 测试卡号
+
+Stripe 测试模式下常用的测试卡号：
+
+| 卡号 | 场景 |
+|------|------|
+| `4242 4242 4242 4242` | 支付成功 |
+| `4000 0000 0000 3220` | 需要 3D Secure 验证 |
+| `4000 0000 0000 0002` | 支付被拒绝 |

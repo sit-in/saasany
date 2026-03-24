@@ -1,0 +1,135 @@
+---
+title: "Authentication"
+description: "Better Auth setup with email/password login, GitHub OAuth, and session management in server and client components."
+order: 4
+---
+
+## Overview
+
+Saasany uses [Better Auth](https://www.better-auth.com/) for authentication. It supports email/password login out of the box, with optional GitHub OAuth. The auth configuration lives in `src/lib/auth.ts`.
+
+## Server Configuration
+
+```typescript
+// src/lib/auth.ts
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { admin } from "better-auth/plugins";
+import { db } from "@/lib/db";
+import * as schema from "@/lib/db/schema";
+
+export const auth = betterAuth({
+  database: drizzleAdapter(db, {
+    provider: "pg",
+    schema: {
+      user: schema.user,
+      session: schema.session,
+      account: schema.account,
+      verification: schema.verification,
+    },
+    usePlural: false,
+  }),
+  emailAndPassword: {
+    enabled: true,
+    requireEmailVerification: false,
+  },
+  socialProviders: {
+    // GitHub OAuth — only enabled if env vars are set
+    ...(process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET
+      ? {
+          github: {
+            clientId: process.env.GITHUB_CLIENT_ID,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET,
+          },
+        }
+      : {}),
+  },
+  plugins: [admin()],
+});
+```
+
+## Client Setup
+
+The client is created in `src/lib/auth-client.ts` and exports convenient hooks:
+
+```typescript
+// src/lib/auth-client.ts
+import { createAuthClient } from "better-auth/react";
+
+export const authClient = createAuthClient({
+  baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL,
+});
+
+export const { signIn, signUp, signOut, useSession } = authClient;
+```
+
+## Session Usage
+
+### Server Components and API Routes
+
+Use `auth.api.getSession()` with the request headers:
+
+```typescript
+import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
+
+// In a Server Component or API route
+const session = await auth.api.getSession({ headers: await headers() });
+
+if (!session) {
+  // User is not logged in
+}
+
+// Access user data
+const userId = session.user.id;
+const email = session.user.email;
+```
+
+### Client Components
+
+Use the `useSession` hook from the auth client:
+
+```typescript
+"use client";
+import { useSession, signIn, signOut } from "@/lib/auth-client";
+
+export function UserMenu() {
+  const { data: session, isPending } = useSession();
+
+  if (isPending) return <div>Loading...</div>;
+  if (!session) return <button onClick={() => signIn.email(...)}>Sign In</button>;
+
+  return <span>Welcome, {session.user.name}</span>;
+}
+```
+
+## GitHub OAuth Setup
+
+1. Go to [GitHub Developer Settings](https://github.com/settings/developers)
+2. Create a new OAuth App
+3. Set the callback URL to: `http://localhost:3000/api/auth/callback/github` (dev) or `https://yourdomain.com/api/auth/callback/github` (prod)
+4. Add the credentials to your `.env.local`:
+
+```bash
+GITHUB_CLIENT_ID=your_client_id
+GITHUB_CLIENT_SECRET=your_client_secret
+```
+
+GitHub OAuth activates automatically when these env vars are present — no code changes needed.
+
+## Auth API Route
+
+The catch-all auth route is at `src/app/api/auth/[...all]/route.ts`. Better Auth handles all auth endpoints (`/api/auth/sign-in`, `/api/auth/sign-up`, `/api/auth/callback/*`, etc.) through this single route.
+
+## Adding More OAuth Providers
+
+Better Auth supports many providers. Add them to the `socialProviders` object in `src/lib/auth.ts`:
+
+```typescript
+socialProviders: {
+  github: { clientId: "...", clientSecret: "..." },
+  google: { clientId: "...", clientSecret: "..." },
+},
+```
+
+See the [Better Auth docs](https://www.better-auth.com/docs/social-providers) for the full list.

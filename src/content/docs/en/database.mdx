@@ -1,0 +1,139 @@
+---
+title: "Database"
+description: "Drizzle ORM with Neon serverless PostgreSQL — schema overview, migrations, and common query patterns."
+order: 5
+---
+
+## Overview
+
+Saasany uses **Drizzle ORM** with **Neon PostgreSQL** over the HTTP driver. This serverless setup requires no persistent connections and works perfectly on Vercel edge and serverless functions.
+
+## Connection Setup
+
+The database connection is configured in `src/lib/db/index.ts`:
+
+```typescript
+import { drizzle } from "drizzle-orm/neon-http";
+import { neon } from "@neondatabase/serverless";
+import * as schema from "./schema";
+
+const sql = neon(process.env.DATABASE_URL!);
+export const db = drizzle(sql, { schema });
+```
+
+Set your connection string in `.env.local`:
+
+```bash
+DATABASE_URL=postgresql://user:password@ep-xxx.region.neon.tech/neondb?sslmode=require
+```
+
+## Schema Overview
+
+All tables are defined in `src/lib/db/schema.ts`. There are two groups:
+
+### Auth Tables (managed by Better Auth)
+
+| Table | Purpose |
+|-------|---------|
+| `user` | User profiles (name, email, role, ban status) |
+| `session` | Active sessions with token and expiry |
+| `account` | OAuth accounts and password hashes |
+| `verification` | Email verification tokens |
+
+### Business Tables
+
+| Table | Purpose |
+|-------|---------|
+| `subscription` | Stripe subscription data (customer ID, plan, status, period) |
+| `apiKey` | API keys with name, hashed key, expiry |
+| `creditBalance` | Per-user credit balance for usage tracking |
+
+## Common Queries
+
+### Query with Drizzle
+
+```typescript
+import { db } from "@/lib/db";
+import { user, subscription } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
+
+// Find a user by email
+const result = await db
+  .select()
+  .from(user)
+  .where(eq(user.email, "user@example.com"))
+  .limit(1);
+
+// Get a user's subscription
+const sub = await db
+  .select()
+  .from(subscription)
+  .where(eq(subscription.userId, userId))
+  .limit(1);
+
+// Insert a new record
+await db.insert(subscription).values({
+  id: crypto.randomUUID(),
+  userId: userId,
+  plan: "free",
+  status: "active",
+});
+
+// Update a record
+await db
+  .update(subscription)
+  .set({ plan: "pro", updatedAt: new Date() })
+  .where(eq(subscription.userId, userId));
+```
+
+## Important: No Transactions
+
+The Neon HTTP driver does **not** support transactions. Do not use `db.transaction()` — it will throw an error. If you need atomic operations, consider switching to the Neon WebSocket driver or handling idempotency at the application level.
+
+## Database Commands
+
+```bash
+# Push schema changes directly to the database (dev)
+npm run db:push
+
+# Generate migration files
+npm run db:generate
+
+# Run migrations
+npm run db:migrate
+
+# Open Drizzle Studio (visual database browser)
+npm run db:studio
+```
+
+### Drizzle Config
+
+The Drizzle Kit configuration is at `drizzle.config.ts`:
+
+```typescript
+import { defineConfig } from "drizzle-kit";
+
+export default defineConfig({
+  schema: "./src/lib/db/schema.ts",
+  out: "./drizzle/migrations",
+  dialect: "postgresql",
+  dbCredentials: {
+    url: process.env.DATABASE_URL!,
+  },
+});
+```
+
+## Adding a New Table
+
+1. Define the table in `src/lib/db/schema.ts`:
+
+```typescript
+export const myTable = pgTable("my_table", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+```
+
+2. Push to the database: `npm run db:push`
+3. Import and use in your code: `import { myTable } from "@/lib/db/schema"`

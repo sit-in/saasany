@@ -1,0 +1,96 @@
+---
+title: "Getting Started"
+description: "Clone the repo, configure environment variables, and get your AI SaaS running locally in under 5 minutes."
+order: 1
+---
+
+## Prerequisites
+
+Make sure you have the following installed before starting:
+
+- **Node.js 18+** (recommended: 20 LTS)
+- **npm** or your preferred package manager
+- A **Neon** account for serverless PostgreSQL
+- API keys for **Stripe**, **OpenAI**, and **Resend** (optional for local dev)
+
+## Clone and Install
+
+```bash
+git clone https://github.com/sit-in/saasany.git
+cd saasany
+npm install
+```
+
+## Environment Setup
+
+Copy the example environment file and fill in your credentials:
+
+```bash
+cp .env.example .env.local
+```
+
+The minimum required variables to run locally:
+
+```bash
+# Database
+DATABASE_URL=postgresql://user:password@host/database?sslmode=require
+
+# Authentication
+BETTER_AUTH_SECRET=your-secret-key-at-least-32-characters
+BETTER_AUTH_URL=http://localhost:3000
+NEXT_PUBLIC_BETTER_AUTH_URL=http://localhost:3000
+
+# Stripe (use test keys)
+STRIPE_SECRET_KEY=sk_test_xxx
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_xxx
+
+# AI
+OPENAI_API_KEY=sk-xxx
+```
+
+## Initialize the Database
+
+Push the Drizzle schema to your Neon database:
+
+```bash
+npm run db:push
+```
+
+This creates all tables: `user`, `session`, `account`, `verification`, `subscription`, `api_key`, and `credit_balance`.
+
+## Run the Dev Server
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) — you should see the landing page with the default Emerald theme.
+
+## Project Structure
+
+```
+src/
+├── app/[locale]/        # Pages (auth, dashboard, marketing)
+├── components/          # React components (ui, landing, dashboard)
+├── config/              # Site config, themes, docs nav
+├── content/             # Blog and docs MDX files
+├── i18n/                # Locale config, messages, routing
+└── lib/                 # Auth, DB, Stripe, AI, email utilities
+```
+
+## First Deploy
+
+The fastest path to production is Vercel:
+
+1. Push your code to GitHub
+2. Import the repo in [Vercel](https://vercel.com/new)
+3. Add all `.env.local` variables to the Vercel project settings
+4. Deploy — your site is live
+
+See the [Deployment](/docs/deployment) guide for details on Stripe webhooks and custom domains.
+
+## Next Steps
+
+- [Configuration](/docs/configuration) — Customize your site name, branding, and social links
+- [Authentication](/docs/authentication) — Set up GitHub OAuth and email verification
+- [Payments](/docs/payments) — Configure Stripe pricing plans

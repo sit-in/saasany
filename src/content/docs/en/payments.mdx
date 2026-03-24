@@ -1,0 +1,148 @@
+---
+title: "Payments"
+description: "Stripe integration for subscriptions — checkout flow, webhook handling, customer portal, and pricing configuration."
+order: 8
+---
+
+## Overview
+
+Saasany integrates Stripe for subscription payments. The flow is: user selects a plan, creates a Checkout session, completes payment, and the webhook updates the subscription in your database.
+
+## Stripe Setup
+
+### 1. Create Products in Stripe
+
+Go to the [Stripe Dashboard](https://dashboard.stripe.com/products) and create your products with recurring prices (monthly and yearly).
+
+### 2. Environment Variables
+
+```bash
+STRIPE_SECRET_KEY=sk_test_xxx           # or sk_live_xxx for production
+STRIPE_WEBHOOK_SECRET=whsec_xxx
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_xxx
+STRIPE_PRO_MONTHLY_PRICE_ID=price_xxx   # Monthly price ID from Stripe
+STRIPE_PRO_YEARLY_PRICE_ID=price_xxx    # Yearly price ID from Stripe
+```
+
+### 3. Configure Plans
+
+Plans are defined in `src/config/site.ts`. Map each plan to its Stripe price IDs:
+
+```typescript
+export const pricingPlans = [
+  {
+    id: "free",
+    name: "Free",
+    price: { monthly: 0, yearly: 0 },
+    stripePriceId: { monthly: "", yearly: "" },
+    features: ["5 AI generations per day", "Basic dashboard"],
+    popular: false,
+  },
+  {
+    id: "pro",
+    name: "Pro",
+    price: { monthly: 29, yearly: 290 },
+    stripePriceId: {
+      monthly: process.env.STRIPE_PRO_MONTHLY_PRICE_ID || "",
+      yearly: process.env.STRIPE_PRO_YEARLY_PRICE_ID || "",
+    },
+    features: ["Unlimited AI generations", "Priority support", "API access"],
+    popular: true,
+  },
+];
+```
+
+## Checkout Flow
+
+The checkout API route is at `src/app/api/stripe/checkout/route.ts`. It creates a Stripe Checkout session:
+
+```typescript
+const checkoutSession = await stripe.checkout.sessions.create({
+  customer: stripeCustomerId,
+  mode: "subscription",
+  payment_method_types: ["card"],
+  line_items: [{ price: priceId, quantity: 1 }],
+  success_url: `${baseUrl}/billing?success=true`,
+  cancel_url: `${baseUrl}/pricing?canceled=true`,
+  metadata: { userId },
+  allow_promotion_codes: true,
+});
+```
+
+The `metadata.userId` is critical — it is how the webhook identifies which user the subscription belongs to.
+
+## Webhook Handling
+
+The webhook route at `src/app/api/stripe/webhook/route.ts` processes three events:
+
+| Event | Action |
+|-------|--------|
+| `checkout.session.completed` | Creates or updates subscription record |
+| `customer.subscription.updated` | Syncs plan status and period dates |
+| `customer.subscription.deleted` | Sets plan to "free" and status to "canceled" |
+
+The webhook verifies the Stripe signature before processing:
+
+```typescript
+const event = stripe.webhooks.constructEvent(
+  body,
+  signature,
+  process.env.STRIPE_WEBHOOK_SECRET!
+);
+```
+
+### Local Testing
+
+Use the Stripe CLI to test webhooks locally:
+
+```bash
+stripe listen --forward-to localhost:3000/api/stripe/webhook
+stripe trigger checkout.session.completed
+```
+
+## Customer Portal
+
+The billing portal route at `src/app/api/stripe/portal/route.ts` lets users manage their subscription, update payment methods, and cancel:
+
+```typescript
+const portalSession = await stripe.billingPortal.sessions.create({
+  customer: stripeCustomerId,
+  return_url: `${baseUrl}/billing`,
+});
+```
+
+Users access this from the `/billing` page in their dashboard.
+
+## Subscription Schema
+
+The `subscription` table tracks all Stripe-related data:
+
+```typescript
+export const subscription = pgTable("subscription", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => user.id),
+  stripeCustomerId: text("stripe_customer_id").unique(),
+  stripeSubscriptionId: text("stripe_subscription_id").unique(),
+  stripePriceId: text("stripe_price_id"),
+  stripeCurrentPeriodStart: timestamp("stripe_current_period_start"),
+  stripeCurrentPeriodEnd: timestamp("stripe_current_period_end"),
+  status: text("status").notNull().default("inactive"),
+  plan: text("plan").default("free"),
+});
+```
+
+## Checking Subscription Status
+
+```typescript
+import { db } from "@/lib/db";
+import { subscription } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
+
+const sub = await db
+  .select()
+  .from(subscription)
+  .where(eq(subscription.userId, userId))
+  .limit(1);
+
+const isPro = sub[0]?.plan === "pro" && sub[0]?.status === "active";
+```

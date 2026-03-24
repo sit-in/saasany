@@ -1,0 +1,117 @@
+---
+title: "Internationalization"
+description: "next-intl setup for EN/ZH locales — server vs client usage, adding languages, and translation file structure."
+order: 6
+---
+
+## Overview
+
+Saasany uses [next-intl](https://next-intl-docs.vercel.app/) for internationalization. Two locales are supported out of the box: English (`en`) and Chinese (`zh`). The locale configuration lives in `src/i18n/config.ts`.
+
+```typescript
+// src/i18n/config.ts
+export const locales = ['en', 'zh'] as const;
+export type Locale = (typeof locales)[number];
+export const defaultLocale: Locale = 'en';
+```
+
+## Locale-Aware Routing
+
+The URL prefix strategy is `as-needed` — English pages have no prefix (e.g., `/about`), while Chinese pages use `/zh/about`.
+
+Always use the i18n-aware navigation helpers instead of Next.js built-ins:
+
+```typescript
+// Always import from @/i18n/navigation, NOT from next/link
+import { Link, redirect, useRouter, usePathname } from "@/i18n/navigation";
+```
+
+## Using Translations
+
+### Server Components
+
+Use `getTranslations` with a namespace:
+
+```typescript
+import { getTranslations } from "next-intl/server";
+
+export default async function Page() {
+  const t = await getTranslations("landing");
+
+  return <h1>{t("hero.title")}</h1>;
+}
+```
+
+### Client Components
+
+Use the `useTranslations` hook:
+
+```typescript
+"use client";
+import { useTranslations } from "next-intl";
+
+export function PricingCard() {
+  const t = useTranslations("pricing");
+
+  return <span>{t("monthly")}</span>;
+}
+```
+
+### Page Metadata
+
+Use `generateMetadata` with translations:
+
+```typescript
+import { getTranslations } from "next-intl/server";
+
+export async function generateMetadata() {
+  const t = await getTranslations("about");
+  return { title: t("meta.title"), description: t("meta.description") };
+}
+```
+
+## Translation Files
+
+Translation messages are in `src/i18n/messages/en.json` and `src/i18n/messages/zh.json`. Both files must have **exactly the same keys**.
+
+```json
+{
+  "landing": {
+    "hero": {
+      "title": "Build your AI SaaS",
+      "subtitle": "Ship in a weekend"
+    }
+  },
+  "pricing": {
+    "monthly": "Monthly",
+    "yearly": "Yearly"
+  }
+}
+```
+
+### Naming Conventions
+
+- Use dot-separated namespaces matching the page or component: `landing.hero.title`
+- Group related keys under a common namespace
+- Keep keys concise but descriptive
+
+## Adding a New Language
+
+1. Add the locale code to `src/i18n/config.ts`:
+
+```typescript
+export const locales = ['en', 'zh', 'ja'] as const;
+```
+
+2. Create the translation file at `src/i18n/messages/ja.json` with all the same keys as `en.json`
+
+3. Update the routing configuration in `src/i18n/routing.ts` if needed
+
+4. Add any locale-specific content (blog posts, docs) under `src/content/*/ja/`
+
+## Common Pitfalls
+
+- **Never** use `useTranslations` in Server Components — use `getTranslations` instead
+- **Never** hardcode text strings in components — always go through the translation system
+- **Always** keep `en.json` and `zh.json` key-aligned — a missing key will cause a runtime error
+- API routes in `src/app/api/` do **not** go through i18n middleware — do not import next-intl there

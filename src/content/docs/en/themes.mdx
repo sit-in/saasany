@@ -1,0 +1,123 @@
+---
+title: "Themes"
+description: "6 built-in color themes with dark mode support — customize colors, switch themes, and create your own."
+order: 7
+---
+
+## Built-in Themes
+
+Saasany ships with 6 color themes, each with full light and dark mode support:
+
+| Theme | Color | ID |
+|-------|-------|----|
+| Emerald | `#0D9276` | `emerald` |
+| Ocean | `#2563EB` | `ocean` |
+| Violet | `#7C3AED` | `violet` |
+| Amber | `#D97706` | `amber` |
+| Rose | `#E11D48` | `rose` |
+| Zinc | `#71717A` | `zinc` |
+
+The default theme is **Emerald**. Themes are defined in `src/config/themes.ts`:
+
+```typescript
+export const themes = [
+  { id: "emerald", name: "Emerald", color: "#0D9276" },
+  { id: "ocean", name: "Ocean", color: "#2563EB" },
+  { id: "violet", name: "Violet", color: "#7C3AED" },
+  { id: "amber", name: "Amber", color: "#D97706" },
+  { id: "rose", name: "Rose", color: "#E11D48" },
+  { id: "zinc", name: "Zinc", color: "#71717A" },
+] as const;
+
+export const DEFAULT_THEME: ThemeId = "emerald";
+```
+
+## How Themes Work
+
+Themes use CSS custom properties with the **OKLCH** color space, defined in `src/app/globals.css`. Each theme overrides the `--primary`, `--ring`, `--chart-*`, and `--sidebar-primary` variables via the `[data-theme="..."]` selector.
+
+```css
+/* Default (Emerald) */
+:root {
+  --primary: oklch(0.555 0.115 172);
+  --primary-foreground: oklch(1 0 0);
+  --ring: oklch(0.555 0.115 172);
+}
+
+/* Ocean theme override */
+[data-theme="ocean"] {
+  --primary: oklch(0.545 0.175 250);
+  --primary-foreground: oklch(1 0 0);
+  --ring: oklch(0.545 0.175 250);
+}
+```
+
+## Dark Mode
+
+Dark mode is handled by [next-themes](https://github.com/paulmillr/next-themes). The `.dark` class is applied to the `<html>` element, and each theme has a corresponding `.dark` variant:
+
+```css
+[data-theme="ocean"].dark {
+  --primary: oklch(0.62 0.18 250);
+  --primary-foreground: oklch(0.13 0.005 250);
+}
+```
+
+Neutral colors (background, card, muted, border) are shared across all themes — only the primary/accent colors change per theme.
+
+## Changing the Default Theme
+
+Update the `DEFAULT_THEME` constant in `src/config/themes.ts`:
+
+```typescript
+export const DEFAULT_THEME: ThemeId = "ocean"; // Change from "emerald"
+```
+
+## Adding a New Theme
+
+1. Add the theme definition to `src/config/themes.ts`:
+
+```typescript
+export const themes = [
+  // ...existing themes
+  { id: "coral", name: "Coral", color: "#FF6B6B" },
+] as const;
+```
+
+2. Add the CSS variables in `src/app/globals.css`:
+
+```css
+/* ── Theme: Coral ── */
+[data-theme="coral"] {
+  --primary: oklch(0.65 0.2 25);
+  --primary-foreground: oklch(1 0 0);
+  --ring: oklch(0.65 0.2 25);
+  --chart-1: oklch(0.65 0.2 25);
+  --chart-2: oklch(0.55 0.17 25);
+  --chart-3: oklch(0.75 0.18 23);
+  --chart-5: oklch(0.45 0.13 25);
+  --sidebar-primary: oklch(0.65 0.2 25);
+  --sidebar-ring: oklch(0.65 0.2 25);
+}
+[data-theme="coral"].dark {
+  --primary: oklch(0.72 0.2 25);
+  --primary-foreground: oklch(0.13 0.005 25);
+  --ring: oklch(0.72 0.2 25);
+  --chart-1: oklch(0.72 0.2 25);
+  --chart-2: oklch(0.65 0.2 25);
+  --chart-3: oklch(0.8 0.17 23);
+  --chart-5: oklch(0.5 0.14 25);
+  --sidebar-primary: oklch(0.72 0.2 25);
+  --sidebar-ring: oklch(0.72 0.2 25);
+}
+```
+
+## Using Theme Colors in Components
+
+All shadcn/ui components automatically use the theme colors via CSS variables. In your own components, use the semantic color classes:
+
+```tsx
+<div className="bg-primary text-primary-foreground">Primary</div>
+<div className="bg-muted text-muted-foreground">Muted</div>
+<div className="border-border">Bordered</div>
+```

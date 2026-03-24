@@ -1,0 +1,101 @@
+---
+title: "Deployment"
+description: "Deploy your Saasany project to Vercel, configure Stripe webhooks, and set up a custom domain."
+order: 3
+---
+
+## Deploy to Vercel
+
+Saasany is optimized for Vercel with zero additional configuration.
+
+### Step-by-Step
+
+1. Push your code to a GitHub repository
+2. Go to [vercel.com/new](https://vercel.com/new) and import the repo
+3. Add your environment variables in the Vercel project settings (copy from `.env.local`)
+4. Click **Deploy**
+
+### Required Environment Variables
+
+Make sure all of these are set in your Vercel project:
+
+```bash
+# App
+NEXT_PUBLIC_APP_URL=https://yourdomain.com
+NEXT_PUBLIC_APP_DOMAIN=yourdomain.com
+
+# Database
+DATABASE_URL=postgresql://...
+
+# Auth
+BETTER_AUTH_SECRET=your-production-secret
+BETTER_AUTH_URL=https://yourdomain.com
+NEXT_PUBLIC_BETTER_AUTH_URL=https://yourdomain.com
+
+# Stripe (use live keys for production)
+STRIPE_SECRET_KEY=sk_live_xxx
+STRIPE_WEBHOOK_SECRET=whsec_xxx
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_xxx
+STRIPE_PRO_MONTHLY_PRICE_ID=price_xxx
+STRIPE_PRO_YEARLY_PRICE_ID=price_xxx
+
+# AI
+OPENAI_API_KEY=sk-xxx
+
+# Email
+RESEND_API_KEY=re_xxx
+RESEND_FROM_EMAIL=YourApp <noreply@yourdomain.com>
+```
+
+## Stripe Webhook Setup
+
+Stripe webhooks are essential for subscription management. Without them, payments will process but your database will not be updated.
+
+### Configure in Stripe Dashboard
+
+1. Go to **Developers > Webhooks** in the [Stripe Dashboard](https://dashboard.stripe.com/webhooks)
+2. Click **Add endpoint**
+3. Set the endpoint URL to: `https://yourdomain.com/api/stripe/webhook`
+4. Select these events:
+   - `checkout.session.completed`
+   - `customer.subscription.updated`
+   - `customer.subscription.deleted`
+5. Copy the **Signing secret** (starts with `whsec_`)
+6. Add it as `STRIPE_WEBHOOK_SECRET` in your Vercel env vars
+
+### Local Webhook Testing
+
+Use the Stripe CLI to forward events to your local dev server:
+
+```bash
+stripe listen --forward-to localhost:3000/api/stripe/webhook
+```
+
+The CLI will output a webhook signing secret — use it as `STRIPE_WEBHOOK_SECRET` in `.env.local`.
+
+## Custom Domain
+
+### Vercel Domains
+
+1. Go to your Vercel project **Settings > Domains**
+2. Add your custom domain
+3. Update DNS records as instructed (usually a CNAME or A record)
+4. Update `NEXT_PUBLIC_APP_URL` and `BETTER_AUTH_URL` to use your new domain
+
+### Email Domain (Resend)
+
+To send emails from your custom domain:
+
+1. Add and verify your domain in the [Resend Dashboard](https://resend.com/domains)
+2. Add the required DNS records (SPF, DKIM, DMARC)
+3. Update `RESEND_FROM_EMAIL` to use your verified domain
+
+## Production Checklist
+
+- [ ] All environment variables set with production values
+- [ ] Stripe webhook endpoint configured and tested
+- [ ] `BETTER_AUTH_SECRET` is a unique, strong secret (not the dev one)
+- [ ] `NEXT_PUBLIC_APP_URL` points to your production domain
+- [ ] Email domain verified in Resend
+- [ ] GitHub OAuth callback URL updated to production domain (if using OAuth)
+- [ ] Database connection string points to a production Neon project

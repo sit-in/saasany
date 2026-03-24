@@ -1,0 +1,153 @@
+---
+title: "主题"
+description: "使用内置的 6 套配色方案，支持暗色模式，自定义颜色和新增主题"
+order: 7
+---
+
+## 内置主题
+
+Saasany 提供 6 套精心调配的配色方案，定义在 `src/config/themes.ts`：
+
+```typescript
+export const themes = [
+  { id: "emerald", name: "Emerald", color: "#0D9276" },
+  { id: "ocean",   name: "Ocean",   color: "#2563EB" },
+  { id: "violet",  name: "Violet",  color: "#7C3AED" },
+  { id: "amber",   name: "Amber",   color: "#D97706" },
+  { id: "rose",    name: "Rose",    color: "#E11D48" },
+  { id: "zinc",    name: "Zinc",    color: "#71717A" },
+] as const;
+
+export const DEFAULT_THEME: ThemeId = "emerald";
+```
+
+用户可以在界面上切换主题，选择会保存在本地。
+
+## 暗色模式
+
+项目使用 `next-themes` 管理暗色模式。每套主题都同时定义了亮色和暗色两组颜色变量。
+
+切换暗色模式的代码示例：
+
+```typescript
+"use client";
+
+import { useTheme } from "next-themes";
+
+export function ThemeToggle() {
+  const { theme, setTheme } = useTheme();
+
+  return (
+    <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+      {theme === "dark" ? "切换到亮色" : "切换到暗色"}
+    </button>
+  );
+}
+```
+
+## 颜色系统
+
+所有颜色通过 CSS 变量定义，使用 OKLCH 色彩空间（比 HSL 有更好的感知均匀性）。
+
+颜色变量定义在 `src/app/globals.css` 中：
+
+```css
+/* 示例：Emerald 主题的部分变量 */
+[data-theme="emerald"] {
+  --background: oklch(0.99 0.002 120);
+  --foreground: oklch(0.145 0.02 120);
+  --primary: oklch(0.55 0.15 160);
+  --primary-foreground: oklch(0.985 0.002 120);
+  --card: oklch(1 0 0);
+  --muted: oklch(0.965 0.005 120);
+  --border: oklch(0.905 0.01 120);
+}
+
+/* 暗色模式 */
+.dark[data-theme="emerald"] {
+  --background: oklch(0.145 0.02 120);
+  --foreground: oklch(0.985 0.002 120);
+  --primary: oklch(0.6 0.16 160);
+  --card: oklch(0.175 0.02 120);
+}
+```
+
+## Tailwind 中使用颜色
+
+在组件中通过 Tailwind 类名引用 CSS 变量：
+
+```tsx
+<div className="bg-background text-foreground">
+  <button className="bg-primary text-primary-foreground">
+    主要按钮
+  </button>
+  <p className="text-muted-foreground">
+    次要文字
+  </p>
+</div>
+```
+
+常用的颜色变量：
+
+| 变量 | 用途 |
+|------|------|
+| `background` / `foreground` | 页面背景和主文字色 |
+| `primary` / `primary-foreground` | 主要按钮和强调元素 |
+| `card` / `card-foreground` | 卡片背景和文字 |
+| `muted` / `muted-foreground` | 次要背景和辅助文字 |
+| `border` | 边框颜色 |
+| `destructive` | 危险操作（删除、错误） |
+
+## 添加新主题
+
+### 第一步：注册主题
+
+在 `src/config/themes.ts` 中添加：
+
+```typescript
+export const themes = [
+  // ...existing themes
+  { id: "indigo", name: "Indigo", color: "#4F46E5" },
+] as const;
+```
+
+### 第二步：定义 CSS 变量
+
+在 `src/app/globals.css` 中为新主题添加亮色和暗色两套变量：
+
+```css
+[data-theme="indigo"] {
+  --background: oklch(0.99 0.002 260);
+  --foreground: oklch(0.145 0.02 260);
+  --primary: oklch(0.5 0.2 270);
+  --primary-foreground: oklch(0.985 0.002 260);
+  /* ...其他变量 */
+}
+
+.dark[data-theme="indigo"] {
+  --background: oklch(0.145 0.02 260);
+  --foreground: oklch(0.985 0.002 260);
+  --primary: oklch(0.6 0.2 270);
+  /* ...其他变量 */
+}
+```
+
+### 第三步：修改默认主题（可选）
+
+```typescript
+// src/config/themes.ts
+export const DEFAULT_THEME: ThemeId = "indigo";
+```
+
+## UI 组件库
+
+Saasany 使用 [shadcn/ui](https://ui.shadcn.com/) 组件库（base-nova 风格），组件位于 `src/components/ui/`。
+
+添加新组件：
+
+```bash
+npx shadcn@latest add dialog
+npx shadcn@latest add dropdown-menu
+```
+
+所有 shadcn/ui 组件会自动适配当前主题的配色。

@@ -265,6 +265,26 @@
     "previous": "Previous",
     "next": "Next"
   },
+  "docs": {
+    "menu": "Menu",
+    "nav": {
+      "guide": "Guide",
+      "core": "Core",
+      "extensions": "Extensions"
+    },
+    "titles": {
+      "getting-started": "Getting Started",
+      "configuration": "Configuration",
+      "deployment": "Deployment",
+      "authentication": "Authentication",
+      "database": "Database",
+      "i18n": "Internationalization",
+      "themes": "Themes",
+      "payments": "Payments",
+      "ai-integration": "AI Integration",
+      "email": "Email"
+    }
+  },
   "common": {
     "loading": "Loading...",
     "error": "Something went wrong. Please try again.",
