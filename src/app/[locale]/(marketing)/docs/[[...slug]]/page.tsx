@@ -12,10 +12,10 @@ import type { Metadata } from "next";
 export default async function Page({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug?: string[] }>;
 }) {
   const { slug } = await params;
-  const page = source.getPage([slug]);
+  const page = source.getPage(slug);
   if (!page) notFound();
 
   const MDX = page.data.body;
@@ -32,18 +32,16 @@ export default async function Page({
 }
 
 export async function generateStaticParams() {
-  return source.generateParams().map((params) => ({
-    slug: Array.isArray(params.slug) ? params.slug[0] : params.slug,
-  }));
+  return source.generateParams();
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug?: string[] }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const page = source.getPage([slug]);
+  const page = source.getPage(slug);
   if (!page) return {};
   return {
     title: page.data.title,
