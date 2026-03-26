@@ -17,7 +17,8 @@
     "title": "快速上线你的 AI SaaS 产品",
     "subtitle": "生产级 Next.js 模板，内置认证、支付、AI 集成，以及启动 SaaS 所需的一切。",
     "cta": "立即开始",
-    "secondaryCta": "查看演示"
+    "secondaryCta": "查看演示",
+    "noCreditCard": "无需信用卡 · 免费开始"
   },
   "features": {
     "title": "你需要的一切",

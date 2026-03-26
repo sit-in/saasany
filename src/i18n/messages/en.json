@@ -17,7 +17,8 @@
     "title": "Ship Your AI SaaS Product Fast",
     "subtitle": "A production-ready Next.js template with authentication, payments, AI integration, and everything you need to launch your SaaS product.",
     "cta": "Get Started",
-    "secondaryCta": "View Demo"
+    "secondaryCta": "View Demo",
+    "noCreditCard": "No credit card required · Free to start"
   },
   "features": {
     "title": "Everything You Need",

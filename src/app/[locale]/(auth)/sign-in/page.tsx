@@ -18,11 +18,6 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Github, AlertCircle } from "lucide-react";
 
-const hasGitHub =
-  typeof window !== "undefined"
-    ? true // 运行时由服务端环境变量控制，此处保守显示
-    : false;
-
 export default function SignInPage() {
   const t = useTranslations("auth");
   const tCommon = useTranslations("common");

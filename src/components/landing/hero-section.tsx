@@ -88,9 +88,10 @@ interface HeroSectionProps {
   subtitle: string;
   cta: string;
   secondaryCta: string;
+  noCreditCard: string;
 }
 
-export function HeroSection({ title, subtitle, cta, secondaryCta }: HeroSectionProps) {
+export function HeroSection({ title, subtitle, cta, secondaryCta, noCreditCard }: HeroSectionProps) {
   return (
     <section
       className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8 pt-24 pb-16"
@@ -181,7 +182,7 @@ export function HeroSection({ title, subtitle, cta, secondaryCta }: HeroSectionP
           variants={fadeUp}
           className="mt-6 text-sm text-muted-foreground"
         >
-          No credit card required &middot; Free to start
+          {noCreditCard}
         </motion.p>
 
         <motion.div

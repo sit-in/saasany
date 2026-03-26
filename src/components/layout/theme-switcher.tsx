@@ -1,14 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import { themes, DEFAULT_THEME, type ThemeId } from "@/config/themes";
 import { cn } from "@/lib/utils";
 import { Palette } from "lucide-react";
-
-function getStoredTheme(): ThemeId {
-  if (typeof window === "undefined") return DEFAULT_THEME;
-  return (localStorage.getItem("color-theme") as ThemeId) || DEFAULT_THEME;
-}
 
 function applyTheme(themeId: ThemeId) {
   const root = document.documentElement;
@@ -21,20 +16,24 @@ function applyTheme(themeId: ThemeId) {
 }
 
 export function ThemeSwitcher() {
-  const [current, setCurrent] = useState<ThemeId>(DEFAULT_THEME);
+  const [current, setCurrent] = useState<ThemeId>(() => {
+    if (typeof window === "undefined") return DEFAULT_THEME;
+    return (localStorage.getItem("color-theme") as ThemeId) || DEFAULT_THEME;
+  });
   const [open, setOpen] = useState(false);
+  const initialized = useRef(false);
 
-  useEffect(() => {
-    const stored = getStoredTheme();
-    setCurrent(stored);
-    applyTheme(stored);
-  }, []);
+  useLayoutEffect(() => {
+    if (initialized.current) return;
+    initialized.current = true;
+    applyTheme(current);
+  }, [current]);
 
-  function handleSelect(themeId: ThemeId) {
+  const handleSelect = useCallback((themeId: ThemeId) => {
     setCurrent(themeId);
     applyTheme(themeId);
     setOpen(false);
-  }
+  }, []);
 
   return (
     <div className="relative">

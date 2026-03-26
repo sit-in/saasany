@@ -22,6 +22,7 @@ export default async function HomePage({
           subtitle={t("subtitle")}
           cta={t("cta")}
           secondaryCta={t("secondaryCta")}
+          noCreditCard={t("noCreditCard")}
         />
         <FeaturesSection locale={locale} />
         <PricingSection locale={locale} />

@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { db } from "@/lib/db";
 import * as schema from "@/lib/db/schema";
-import { eq, gte, count, sql } from "drizzle-orm";
+import { eq, gte, count } from "drizzle-orm";
 import {
   Card,
   CardContent,
